@@ -38,7 +38,7 @@ app.get("/users/:id", async (req, res) => {
   }
 
   try {
-    const query = "SELECT * FROM user WHERE user.id=?";
+    const query = "SELECT * FROM user WHERE user_id=?";
     const [rows] = await connection.query(query, [id]);
 
     retVal.data = rows[0];
