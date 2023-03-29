@@ -4,6 +4,8 @@ const bodyParser = require("body-parser");
 const dotenv = require("dotenv");
 const mysql = require("mysql2/promise");
 const user = require("./controllers/userController.js");
+const house = require("./controllers/houseController.js");
+
 
 /* dotenv.config();
 
@@ -65,6 +67,8 @@ app.get("/", (req, res) => {
 });
 
 app.use("/user", user);
+app.use("/house", house);
+
 
 const port = process.env.PORT || 3001;
 app.listen(port, () => {
