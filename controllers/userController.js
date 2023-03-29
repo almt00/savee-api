@@ -13,7 +13,18 @@ router.get("/:id", function (req, res) {
 
 router.post('/', (req, res) => {
     let data = req.body;
-    res.send('Data Received: ' + JSON.stringify(data));
+    res.send('user added: ' + JSON.stringify(data));
 })
+
+router.put('/:id', (req, res) => {
+  let data = req.body;
+  res.send('user info added: ' + JSON.stringify(data));
+})
+
+router.delete('/:id', (req, res) => {
+  let data = req.body;
+  res.send('user deleted ' + JSON.stringify(data));
+})
+
 
 module.exports = router;
