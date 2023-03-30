@@ -1,14 +1,21 @@
-import express from "express";
-import dotenv from "dotenv";
-import mysql from "mysql2/promise";
+const express = require("express");
+const bodyParser = require("body-parser");
 
-dotenv.config();
+const dotenv = require("dotenv");
+const mysql = require("mysql2/promise");
+const user = require("./controllers/userController.js");
+const house = require("./controllers/houseController.js");
 
-const connection = await mysql.createConnection(process.env.DATABASE_URL);
+
+/* dotenv.config();
+
+const connection = await mysql.createConnection(process.env.DATABASE_URL); */
 
 const app = express();
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 
-app.get("/users", async (req, res) => {
+/* app.get("/users", async (req, res) => {
   let status = 200;
   let retVal = {};
 
@@ -23,9 +30,9 @@ app.get("/users", async (req, res) => {
   } finally {
     res.status(status).json(retVal);
   }
-});
+}); */
 
-app.get("/users/:id", async (req, res) => {
+/* app.get("/users/:id", async (req, res) => {
   let status = 200;
   let retVal = {};
 
@@ -53,7 +60,15 @@ app.get("/users/:id", async (req, res) => {
   } finally {
     res.status(status).json(retVal);
   }
+}); */
+
+app.get("/", (req, res) => {
+  res.send("Hello World!");
 });
+
+app.use("/user", user);
+app.use("/house", house);
+
 
 const port = process.env.PORT || 3001;
 app.listen(port, () => {
