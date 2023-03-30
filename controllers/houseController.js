@@ -2,8 +2,8 @@ const express = require("express");
 const router = express.Router();
 
 // house details route
-router.get("/:id", function (req, res) {
-  res.send(`house ${req.params.id} details`);
+router.get("/:house_id", function (req, res) {
+  res.send(`house ${req.params.house_id} details`);
 });
 
 router.post('/', (req, res) => {
@@ -11,27 +11,24 @@ router.post('/', (req, res) => {
     res.send('house added: ' + JSON.stringify(data));
 })
 
-router.put('/:id', (req, res) => {
+router.put('/:house_id', (req, res) => {
   let data = req.body;
   res.send('house info added: ' + JSON.stringify(data));
 })
 
-router.get('/:id/consumption', (req, res) => {
-  let data = req.body;
+router.get('/:house_id/consumption', (req, res) => {
   res.send('house consumption details ');
 })
 
-router.get('/:id/payment', (req, res) => {
-  let data = req.body;
+router.get('/:house_id/payment', (req, res) => {
   res.send('house payments details ');
 })
 
-router.get('/:id/payment/:id', (req, res) => { //isto mete-se assim??
-  let data = req.body;
-  res.send(`house's ${req.params.id}º payment details `);
+router.get('/:house_id/payment/:payment_id', (req, res) => { //isto mete-se assim??
+  res.send(`house ${req.params.house_id}, ${req.params.payment_id}º payment details `);
 })
 
-router.post('/:id/payment', (req, res) => {
+router.post('/:house_id/payment', (req, res) => {
   let data = req.body;
   res.send('house payment added: '+ JSON.stringify(data));
 })
