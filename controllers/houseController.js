@@ -21,7 +21,6 @@ router.put("/:house_id", (req, res) => {
 
 router.get("/:house_id/consumption", (req, res) => {
   res.send([
-    // falta adicionar um objecto house_id a wrap isto
     {
       consumption_id: 1,
       payment_id: 1,
@@ -45,7 +44,6 @@ router.get("/:house_id/consumption", (req, res) => {
 
 router.get("/:house_id/payment", (req, res) => {
   res.send([
-    // falta adicionar um objecto house_id a wrap isto
     {
       payment_id: 1,
       date_payment: "2022-12-01",
@@ -63,15 +61,12 @@ router.get("/:house_id/payment", (req, res) => {
 
 router.get("/:house_id/payment/:payment_id", (req, res) => {
   //isto mete-se assim??
-  res.send(
-    // falta adicionar um objecto house_id a wrap isto
-    {
-      payment_id: `${req.params.payment_id}`,
-      date_payment: "2022-12-01",
-      value_payment: 80,
-      house_id: 1,
-    }
-  );
+  res.send({
+    payment_id: `${req.params.payment_id}`,
+    date_payment: "2022-12-01",
+    value_payment: 80,
+    house_id: 1,
+  });
 });
 
 router.post("/:house_id/payment", (req, res) => {
