@@ -3,18 +3,32 @@ const router = express.Router();
 
 // users list route
 router.get("/", function (req, res) {
-  res.send({
-    user_id: 1,
-    first_name: "Pedro",
-    last_name: "Silva",
-    username: "pedro001",
-    password_hash:
-      "$2y$10$X3JmxLTV8lImnnTxtLmbp.E35W.jiHA2oRpkUM/o7wciNrtpsJ10q",
-    email: "pedro001@gmail.com",
-    creation_date: "2022-12-01T00:00:00.000Z",
-    house_id: 1,
-    ref_avatar: 1,
-  });
+  res.send([
+    {
+      user_id: 1,
+      first_name: "Pedro",
+      last_name: "Silva",
+      username: "pedro001",
+      password_hash:
+        "$2y$10$X3JmxLTV8lImnnTxtLmbp.E35W.jiHA2oRpkUM/o7wciNrtpsJ10q",
+      email: "pedro001@gmail.com",
+      creation_date: "2022-12-01",
+      house_id: 1,
+      ref_avatar: 1,
+    },
+    {
+      user_id: 2,
+      first_name: "Asdrubal",
+      last_name: "Teixeira",
+      username: "asdrublissimo",
+      password_hash:
+        "$2y$10$X3JmxLTV8lImnnTxtLmbp.E35W.jiHA2oRpkUM/o7wciNrtpsJ10q",
+      email: "asdrublissimo@gmail.com",
+      creation_date: "2023-01-02",
+      house_id: 1,
+      ref_avatar: 2,
+    },
+  ]);
 });
 
 // user details route
@@ -27,7 +41,7 @@ router.get("/:user_id", function (req, res) {
     password_hash:
       "$2y$10$X3JmxLTV8lImnnTxtLmbp.E35W.jiHA2oRpkUM/o7wciNrtpsJ10q",
     email: "pedro001@gmail.com",
-    creation_date: "2022-12-01T00:00:00.000Z",
+    creation_date: "2022-12-01",
     house_id: 1,
     ref_avatar: 1,
   });
@@ -56,7 +70,7 @@ router.get("/:user_id/consumption", function (req, res) {
     payment_id: 1,
     routine_id: 1,
     task_id: 1,
-    consumption_date: "2022-12-01T00:00:00.000Z",
+    consumption_date: "2022-12-01",
     consumption: 134,
     type: 2,
   });
@@ -67,14 +81,14 @@ router.get("/:user_id/task", function (req, res) {
     {
       task_id: 1,
       start_time: "2022-12-01T00:00:00.000Z",
-      end_time: "2022-12-01T00:00:00.000Z",
+      end_time: "2022-12-01T00:30:00.000Z",
       duration: "30",
       ref_task_id: 2,
     },
     {
       task_id: 2,
       start_time: "2022-12-01T00:00:00.000Z",
-      end_time: "2022-12-01T00:00:00.000Z",
+      end_time: "2022-12-01T00:15:00.000Z",
       duration: "15",
       ref_task_id: 3,
     },
@@ -90,7 +104,7 @@ router.get("/:user_id/task/:task_id", function (req, res) {
   res.send({
     task_id: `${req.params.task_id}`,
     start_time: "2022-12-01T00:00:00.000Z",
-    end_time: "2022-12-01T00:00:00.000Z",
+    end_time: "2022-12-01T00:30:00.000Z",
     duration: "30",
     ref_task_id: 2,
   });
@@ -107,7 +121,7 @@ router.get("/:user_id/routine", function (req, res) {
       routine_id: 1,
       user_id: `${req.params.user_id}`,
       duration_routine: 30,
-      creation_routine: "2022-12-01T00:00:00.000Z",
+      creation_routine: "2022-12-01",
       weekdays: [2, 3, 4],
       period_time: 1,
     },
@@ -115,7 +129,7 @@ router.get("/:user_id/routine", function (req, res) {
       routine_id: 2,
       user_id: `${req.params.user_id}`,
       duration_routine: 15,
-      creation_routine: "2022-12-01T00:00:00.000Z",
+      creation_routine: "2022-12-01",
       weekdays: [1, 2],
       period_time: 2,
     },
@@ -127,7 +141,7 @@ router.get("/:user_id/routine/:routine_id", function (req, res) {
     routine_id: `${req.params.routine_id}`,
     user_id: `${req.params.user_id}`,
     duration_routine: 30,
-    creation_routine: "2022-12-01T00:00:00.000Z",
+    creation_routine: "2022-12-01",
     weekdays: [2, 3, 4],
     period_time: 1,
   });
