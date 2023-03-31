@@ -3,7 +3,18 @@ const router = express.Router();
 
 // users list route
 router.get("/", function (req, res) {
-  res.send("users list");
+  res.send({
+    user_id: 1,
+    first_name: "Pedro",
+    last_name: "Silva",
+    username: "pedro001",
+    password_hash:
+      "$2y$10$X3JmxLTV8lImnnTxtLmbp.E35W.jiHA2oRpkUM/o7wciNrtpsJ10q",
+    email: "pedro001@gmail.com",
+    creation_date: "2022-12-01T00:00:00.000Z",
+    house_id: 1,
+    ref_avatar: 1,
+  });
 });
 
 // user details route
@@ -63,7 +74,9 @@ router.post("/:user_id/routine", function (req, res) {
 
 router.put("/:user_id/routine/:routine_id", function (req, res) {
   let data = req.body;
-  res.send(`user's ${req.params.routine_id}º routine updated: ${JSON.stringify(data)}`);
+  res.send(
+    `user's ${req.params.routine_id}º routine updated: ${JSON.stringify(data)}`
+  );
 });
 
 router.delete("/:user_id/routine/:routine_id", (req, res) => {
