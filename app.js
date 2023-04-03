@@ -5,6 +5,7 @@ const dotenv = require("dotenv");
 const mysql = require("mysql2/promise");
 const user = require("./controllers/userController.js");
 const house = require("./controllers/houseController.js");
+const consumption = require("./controllers/consumptionController.js");
 
 
 /* dotenv.config();
@@ -68,6 +69,7 @@ app.get("/", (req, res) => {
 
 app.use("/user", user);
 app.use("/house", house);
+app.use("/consumption", consumption);
 
 
 const port = process.env.PORT || 3001;
