@@ -19,29 +19,6 @@ router.put("/:house_id", (req, res) => {
   res.send("house info added: " + JSON.stringify(data));
 });
 
-router.get("/:house_id/consumption", (req, res) => {
-  res.send([
-    {
-      consumption_id: 1,
-      payment_id: 1,
-      routine_id: 1,
-      task_id: 1,
-      consumption_date: "2022-12-01",
-      consumption: 134,
-      type: 2,
-    },
-    {
-      consumption_id: 2,
-      payment_id: 1,
-      routine_id: 1,
-      task_id: 1,
-      consumption_date: "2022-12-01",
-      consumption: 134,
-      type: 2,
-    },
-  ]);
-});
-
 router.get("/:house_id/payment", (req, res) => {
   res.send([
     {
