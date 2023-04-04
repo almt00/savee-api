@@ -63,8 +63,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
   }
 }); */
 
-app.get("/api", (req, res) => {
-  res.send(`Hello!`);
+app.get("/", (req, res) => {
+  res.send("Hello!");
 });
 
 app.use("/user", user);
