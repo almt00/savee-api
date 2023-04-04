@@ -13,6 +13,8 @@ const consumption = require("./controllers/consumptionController.js");
 const connection = await mysql.createConnection(process.env.DATABASE_URL); */
 
 const app = express();
+const { v4 } = require('uuid');
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -63,11 +65,19 @@ app.use(bodyParser.urlencoded({ extended: false }));
   }
 }); */
 
-app.get("/", (req, res) => {
-  res.send("Hello World!");
+app.get("/api", (req, res) => {
+  const path = `/api/item/${v4()}`;
+  res.setHeader('Content-Type', 'text/html');
+  res.setHeader('Cache-Control', 's-max-age=1, stale-while-revalidate');
+  res.end(`Hello! Go to item: <a href="${path}">${path}</a>`);
 });
 
-app.use("/user", user);
+app.get('/api/item/:slug', (req, res) => {
+  const { slug } = req.params;
+  res.end(`Item: ${slug}`);
+});
+
+/*app.use("/user", user);
 app.use("/house", house);
 app.use("/consumption", consumption);
 
@@ -75,4 +85,6 @@ app.use("/consumption", consumption);
 const port = process.env.PORT || 3001;
 app.listen(port, () => {
   console.log("App is running");
-});
+});*/
+
+module.exports = app;
