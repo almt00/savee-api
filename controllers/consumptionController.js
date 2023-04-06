@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-router.get("(/consumption/user/:user_id)", function (req, res) {
+router.get("(/user/:user_id)", function (req, res) {
   res.send([
     {
       task_id: 1,
@@ -34,7 +34,7 @@ router.get("(/consumption/user/:user_id)", function (req, res) {
   ]);
 });
 
-router.get("/consumption/house/:house_id", (req, res) => {
+router.get("/house/:house_id", (req, res) => {
   res.send([
     {
       consumption_id: 1,

@@ -7,12 +7,12 @@ const user = require("./controllers/userController.js");
 const house = require("./controllers/houseController.js");
 const consumption = require("./controllers/consumptionController.js");
 
-
 /* dotenv.config();
 
 const connection = await mysql.createConnection(process.env.DATABASE_URL); */
 
 const app = express();
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -64,15 +64,16 @@ app.use(bodyParser.urlencoded({ extended: false }));
 }); */
 
 app.get("/", (req, res) => {
-  res.send("Hello World!");
+  res.send("Hello!");
 });
 
 app.use("/user", user);
 app.use("/house", house);
 app.use("/consumption", consumption);
 
-
 const port = process.env.PORT || 3001;
 app.listen(port, () => {
   console.log("App is running");
 });
+
+module.exports = app;
