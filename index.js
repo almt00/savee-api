@@ -1,4 +1,5 @@
 const express = require("express");
+var cors = require('cors')
 const bodyParser = require("body-parser");
 
 const dotenv = require("dotenv");
@@ -67,6 +68,7 @@ app.get("/", (req, res) => {
   res.send("Hello!");
 });
 
+app.use(cors())
 app.use("/user", user);
 app.use("/house", house);
 app.use("/consumption", consumption);
@@ -75,29 +77,5 @@ const port = process.env.PORT || 3001;
 app.listen(port, () => {
   console.log("App is running");
 });
-
-const allowCors = fn => async (req, res) => {
-  res.setHeader('Access-Control-Allow-Credentials', true)
-  res.setHeader('Access-Control-Allow-Origin', '*')
-  // another common pattern
-  // res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
-  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT')
-  res.setHeader(
-    'Access-Control-Allow-Headers',
-    'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
-  )
-  if (req.method === 'OPTIONS') {
-    res.status(200).end()
-    return
-  }
-  return await fn(req, res)
-}
-
-const handler = (req, res) => {
-  const d = new Date()
-  res.end(d.toString())
-}
-
-module.exports = allowCors(handler)
 
 module.exports = app;
