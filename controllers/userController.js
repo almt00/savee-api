@@ -1,34 +1,11 @@
 const express = require("express");
+const prisma = require("../lib/prisma.js");
 const router = express.Router();
 
 // users list route
-router.get("/", function (req, res) {
-  res.send([
-    {
-      user_id: 1,
-      first_name: "Pedro",
-      last_name: "Silva",
-      username: "pedro001",
-      password_hash:
-        "$2y$10$X3JmxLTV8lImnnTxtLmbp.E35W.jiHA2oRpkUM/o7wciNrtpsJ10q",
-      email: "pedro001@gmail.com",
-      creation_date: "2022-12-01",
-      house_id: 1,
-      ref_avatar: 1,
-    },
-    {
-      user_id: 2,
-      first_name: "Asdrubal",
-      last_name: "Teixeira",
-      username: "asdrublissimo",
-      password_hash:
-        "$2y$10$X3JmxLTV8lImnnTxtLmbp.E35W.jiHA2oRpkUM/o7wciNrtpsJ10q",
-      email: "asdrublissimo@gmail.com",
-      creation_date: "2023-01-02",
-      house_id: 1,
-      ref_avatar: 2,
-    },
-  ]);
+router.get("/", async function (req, res) {
+  const users = await prisma.user.findMany();
+  res.json(users);
 });
 
 // user details route
