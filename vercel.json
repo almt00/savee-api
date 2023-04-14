@@ -18,7 +18,7 @@
       "headers": [{ "key": "Access-Control-Allow-Origin", "value": "*" }]
     },
     {
-      "source": "/savee-api-git-adding-prisma-heyamie.vercel.app/(.*)",
+      "source": "/savee-api.vercel.app/(.*)",
       "headers": [{ "key": "Access-Control-Allow-Origin", "value": "*" }]
     }
   ]
