@@ -1,5 +1,6 @@
 const express = require("express");
 const prisma = require("../lib/prisma.js");
+const { parse } = require("dotenv");
 const router = express.Router();
 
 // users list route
@@ -19,8 +20,8 @@ router.get("/:user_id", async function (req, res) {
   res.json(user);
 });
 
+// add user to DB
 router.post("/", async (req, res) => {
-  
   const {
     first_name,
     last_name,
@@ -46,6 +47,7 @@ router.post("/", async (req, res) => {
   });
 });
 
+//update user info
 router.put("/:user_id", (req, res) => {
   let data = req.body;
   res.send("user info added: " + JSON.stringify(data));
@@ -56,38 +58,39 @@ router.delete("/:user_id", (req, res) => {
   res.send("user deleted " + JSON.stringify(data));
 });
 
-router.get("/:user_id/task", function (req, res) {
-  res.send([
-    {
-      task_id: 1,
-      start_time: "2022-12-01T00:00:00.000Z",
-      end_time: "2022-12-01T00:30:00.000Z",
-      duration: "30",
-      ref_task_id: 2,
+router.get("/:user_id/task", async function (req, res) {
+  const { user_id } = req.params;
+  const tasks = await prisma.userTask.findMany({
+    where: {
+      user_id: parseInt(user_id),
     },
-    {
-      task_id: 2,
-      start_time: "2022-12-01T00:00:00.000Z",
-      end_time: "2022-12-01T00:15:00.000Z",
-      duration: "15",
-      ref_task_id: 3,
-    },
-  ]);
-});
-
-router.post("/:user_id/task", function (req, res) {
-  let data = req.body;
-  res.send("user task added: " + JSON.stringify(data));
-});
-
-router.get("/:user_id/task/:task_id", function (req, res) {
-  res.send({
-    task_id: `${req.params.task_id}`,
-    start_time: "2022-12-01T00:00:00.000Z",
-    end_time: "2022-12-01T00:30:00.000Z",
-    duration: "30",
-    ref_task_id: 2,
   });
+  res.json(tasks);
+});
+
+router.post("/:user_id/task", async function (req, res) {
+  const { user_id } = req.params;
+  const { start_time, end_time, duration, task_id } = req.body;
+  await prisma.userTask.create({
+    data: {
+      user_id: parseInt(user_id),
+      start_time: start_time,
+      end_time: end_time,
+      duration: duration, // isto vai ser calculado aqui ou no frontend?
+      task_id: task_id,
+    },
+  });
+});
+
+router.get("/:user_id/task/:task_id", async function (req, res) {
+  const { user_id, task_id } = req.params;
+  const task = await prisma.userTask.findUnique({
+    where: {
+      user_id: parseInt(user_id),
+      task_id: parseInt(task_id),
+    },
+  });
+  res.json(task);
 });
 
 router.delete("/:user_id/task/:task_id", (req, res) => {
@@ -95,36 +98,25 @@ router.delete("/:user_id/task/:task_id", (req, res) => {
   res.send(`task ${req.params.task_id} deleted ` + JSON.stringify(data));
 });
 
-router.get("/:user_id/routine", function (req, res) {
-  res.send([
-    {
-      routine_id: 1,
-      user_id: `${req.params.user_id}`,
-      duration_routine: 30,
-      creation_routine: "2022-12-01",
-      weekdays: [2, 3, 4],
-      period_time: 1,
+router.get("/:user_id/routine", async function (req, res) {
+  const { user_id } = req.params;
+  const routines = await prisma.userRoutine.findMany({
+    where: {
+      user_id: parseInt(user_id),
     },
-    {
-      routine_id: 2,
-      user_id: `${req.params.user_id}`,
-      duration_routine: 15,
-      creation_routine: "2022-12-01",
-      weekdays: [1, 2],
-      period_time: 2,
-    },
-  ]);
+  });
+  res.json(routines);
 });
 
-router.get("/:user_id/routine/:routine_id", function (req, res) {
-  res.send({
-    routine_id: `${req.params.routine_id}`,
-    user_id: `${req.params.user_id}`,
-    duration_routine: 30,
-    creation_routine: "2022-12-01",
-    weekdays: [2, 3, 4],
-    period_time: 1,
+router.get("/:user_id/routine/:routine_id", async function (req, res) {
+  const { user_id, routine_id } = req.params;
+  const routine = await prisma.userRoutine.findFirst({
+    where: {
+      user_id: parseInt(user_id),
+      routine_id: parseInt(routine_id),
+    },
   });
+  res.json(routine);
 });
 
 router.post("/:user_id/routine", function (req, res) {
@@ -144,30 +136,25 @@ router.delete("/:user_id/routine/:routine_id", (req, res) => {
   res.send(`routine ${req.params.routine_id} deleted ` + JSON.stringify(data));
 });
 
-router.get("/:user_id/payment", function (req, res) {
-  res.send([
-    {
-      payment_id: 1,
-      date_payment: "2022-12-01",
-      value_payment: 80,
-      house_id: 1,
+router.get("/:user_id/payment", async function (req, res) {
+  const { user_id } = req.params;
+  const payments = await prisma.userPayment.findMany({
+    where: {
+      user_id: parseInt(user_id),
     },
-    {
-      payment_id: 2,
-      date_payment: "2023-01-01",
-      value_payment: 85,
-      house_id: 1,
-    },
-  ]);
+  });
+  res.json(payments);
 });
 
-router.get("/:user_id/payment/:payment_id", function (req, res) {
-  res.send({
-    payment_id: `${req.params.payment_id}`,
-    date_payment: "2022-12-01",
-    value_payment: 80,
-    house_id: 1,
+router.get("/:user_id/payment/:payment_id", async function (req, res) {
+  const { user_id, payment_id } = req.params;
+  const payment = await prisma.userPayment.findFirst({
+    where: {
+      user_id: parseInt(user_id),
+      payment_id: parseInt(payment_id), // aqui não tenho a crtz se é pelo id de pagamento referente (casa) ou pelo id do pagamento nesta tabela
+    },
   });
+  res.json(payment);
 });
 
 module.exports = router;
