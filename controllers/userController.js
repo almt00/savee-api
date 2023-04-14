@@ -9,24 +9,41 @@ router.get("/", async function (req, res) {
 });
 
 // user details route
-router.get("/:user_id", function (req, res) {
-  res.send({
-    user_id: `${req.params.user_id}`,
-    first_name: "Pedro",
-    last_name: "Silva",
-    username: "pedro001",
-    password_hash:
-      "$2y$10$X3JmxLTV8lImnnTxtLmbp.E35W.jiHA2oRpkUM/o7wciNrtpsJ10q",
-    email: "pedro001@gmail.com",
-    creation_date: "2022-12-01",
-    house_id: 1,
-    ref_avatar: 1,
+router.get("/:user_id", async function (req, res) {
+  const { user_id } = req.params;
+  const user = await prisma.user.findUnique({
+    where: {
+      user_id: parseInt(user_id),
+    },
   });
+  res.json(user);
 });
 
-router.post("/", (req, res) => {
-  let data = req.body;
-  res.send("user added: " + JSON.stringify(data));
+router.post("/", async (req, res) => {
+  
+  const {
+    first_name,
+    last_name,
+    username,
+    password_hash,
+    email,
+    creation_date,
+    house_id,
+    ref_avatar,
+  } = req.body;
+
+  await prisma.user.create({
+    data: {
+      first_name: first_name,
+      last_name: last_name,
+      username: username,
+      password_hash: password_hash,
+      email: email,
+      creation_date: new Date(creation_date),
+      house_id: house_id,
+      ref_avatar: ref_avatar,
+    },
+  });
 });
 
 router.put("/:user_id", (req, res) => {

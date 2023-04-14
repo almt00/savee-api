@@ -88,12 +88,12 @@ model User {
 }
 
 model UserPayment {
-  payment            PaymentHistory @relation(fields: [payment_id], references: [payment_id])
-  payment_id         Int
-  user               User           @relation(fields: [user_id], references: [user_id])
-  user_id            Int
-  payment_percentage Float          @db.Float
-  user_has_payment_id Int   @id @default(autoincrement())
+  payment             PaymentHistory @relation(fields: [payment_id], references: [payment_id])
+  payment_id          Int
+  user                User           @relation(fields: [user_id], references: [user_id])
+  user_id             Int
+  payment_percentage  Float          @db.Float
+  user_has_payment_id Int            @id @default(autoincrement())
 
   //@@id([payment_id, user_id])
   @@index([payment_id], map: "payment_id_idx")
