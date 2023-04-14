@@ -3,8 +3,10 @@ generator client {
 }
 
 datasource db {
-  provider     = "mysql"
-  url          = env("process.env.DATABASE_URL") // changing on dev branch
+  provider = "mysql"
+  //url          = env("process.env.DATABASE_URL") // changing on dev branch
+  url      = env("DATABASE_URL") // changing on dev branch
+
   relationMode = "prisma"
 }
 
@@ -105,11 +107,11 @@ model UserRoutine {
   routine_id                  Int                  @id @default(autoincrement())
   user                        User                 @relation(fields: [user_id], references: [user_id])
   user_id                     Int
-  duration_routine            DateTime             @db.DateTime(0)
+  duration_routine            Int                  @db.Int()
   creation_routine            DateTime             @db.DateTime(0)
-  task                        Json
-  weekdays                    Json
-  period_time                 Json
+  task                        Int                  @db.Int()
+  weekdays                    Json                 @db.Json()
+  period_time                 Json                 @db.Json()
   consumption_history_entries ConsumptionHistory[]
 
   @@index([user_id], map: "user_id_idx")
@@ -122,8 +124,8 @@ model UserTask {
   user_id                     Int
   start_time                  DateTime?            @db.DateTime(0)
   end_time                    DateTime?            @db.DateTime(0)
-  duration                    DateTime?            @db.DateTime(0)
-  task                        Json
+  duration                    Int?                 @db.Int()
+  task                        Int                  @db.Int()
   consumption_history_entries ConsumptionHistory[]
 
   @@index([user_id], map: "user_id_idx")
