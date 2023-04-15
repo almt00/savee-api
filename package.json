@@ -6,7 +6,9 @@
   "type": "commonjs",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "devStart": "nodemon app.js"
+    "devStart": "nodemon app.js",
+    "vercel-build": "prisma generate && next build",
+    "prisma:generate": "prisma generate"
   },
   "keywords": [],
   "author": "",
