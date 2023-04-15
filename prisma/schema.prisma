@@ -5,7 +5,6 @@ generator client {
 datasource db {
   provider = "mysql"
   url      = env("process.env.DATABASE_URL") // changing on dev branch
-  //url      = env("DATABASE_URL") // changing on dev branch
 
   relationMode = "prisma"
 }
