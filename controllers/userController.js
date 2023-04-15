@@ -11,7 +11,7 @@ router.get("/", async function (req, res) {
 // user details route
 router.get("/:user_id", async function (req, res) {
   const { user_id } = req.params;
-  const user = await prisma.user.findUnique({
+  const user = await prisma.user.findFirst({
     where: {
       user_id: parseInt(user_id),
     },
