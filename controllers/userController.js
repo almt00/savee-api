@@ -83,7 +83,7 @@ router.post("/:user_id/task", async function (req, res) {
 
 router.get("/:user_id/task/:task_id", async function (req, res) {
   const { user_id, task_id } = req.params;
-  const task = await prisma.userTask.findUnique({
+  const task = await prisma.userTask.findFirst({
     where: {
       user_id: parseInt(user_id),
       task_id: parseInt(task_id),
