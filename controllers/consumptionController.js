@@ -12,7 +12,7 @@ router.get("(/user/:user_id)", async function (req, res) {
   res.json(user_consumptions);
 });
 
-router.get("/house/:house_id",async (req, res) => {
+router.get("/house/:house_id", async (req, res) => {
   const { house_id } = req.params;
   const house_consumptions = await prisma.consumptionHistory.findMany({
     where: {
