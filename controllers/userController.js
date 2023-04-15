@@ -65,6 +65,7 @@ router.get("/:user_id/task", async function (req, res) {
     },
   });
   res.json(tasks);
+  console.log(tasks);
 });
 
 router.post("/:user_id/task", async function (req, res) {
