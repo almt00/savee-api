@@ -1,6 +1,5 @@
 const express = require("express");
 const prisma = require("../lib/prisma.js");
-const { parse } = require("dotenv");
 const router = express.Router();
 
 // users list route
