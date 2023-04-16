@@ -8,6 +8,22 @@ router.get("(/user/:user_id)", async function (req, res) {
     where: {
       user_id: parseInt(user_id),
     },
+    include: {
+      task: {
+        select: {
+          start_time: true,
+          end_time: true,
+          task: true,
+        }
+      },
+      routine: {
+        select: {
+          duration_routine: true,
+          creation_routine: true,
+          task: true,
+        }
+      },
+    }
   });
   res.json(user_consumptions);
 });
