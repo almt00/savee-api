@@ -1,0 +1,131 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+model ConsumptionHistory {
+  consumption_id   Int            @id @default(autoincrement())
+  house            House          @relation(fields: [house_id], references: [house_id])
+  house_id         Int
+  user             User           @relation(fields: [user_id], references: [user_id])
+  user_id          Int
+  payment          PaymentHistory @relation(fields: [payment_id], references: [payment_id])
+  payment_id       Int
+  routine          UserRoutine?   @relation(fields: [routine_id], references: [routine_id])
+  routine_id       Int?
+  task             UserTask?      @relation(fields: [task_id], references: [task_id])
+  task_id          Int?
+  consumption_date DateTime       @db.DateTime(0)
+  consumption      Int
+  type             Int
+
+  @@index([house_id], map: "house_id_idx")
+  @@index([payment_id], map: "payment_id_idx")
+  @@index([routine_id], map: "routine_id_idx")
+  @@index([task_id], map: "task_id_idx")
+  @@index([user_id], map: "user_id_idx")
+  @@map("consumption_history")
+}
+
+model House {
+  house_id                    Int                  @id @default(autoincrement())
+  house_name                  String               @db.VarChar(255)
+  consumption_history_entries ConsumptionHistory[]
+  users                       User[]
+  PaymentHistory              PaymentHistory[]
+
+  @@map("house")
+}
+
+model PaymentHistory {
+  payment_id                  Int                  @id @default(autoincrement())
+  date_payment                DateTime?            @db.Date
+  value_payment               Float?               @db.Float
+  house                       House                @relation(fields: [house_id], references: [house_id])
+  house_id                    Int
+  consumption_history_entries ConsumptionHistory[]
+  UserPayment                 UserPayment[]
+
+  @@index([house_id], map: "house_id_idx")
+  @@map("payment_history")
+}
+
+model PendingInvites {
+  invite_id    Int       @id @default(autoincrement())
+  email_invite String    @db.VarChar(255)
+  request_date DateTime? @db.Date
+  user         User      @relation(fields: [user_id], references: [user_id])
+  user_id      Int
+
+  @@index([user_id], map: "user_id_idx")
+  @@map("pending_invites")
+}
+
+model User {
+  user_id             Int                  @id @default(autoincrement())
+  first_name          String               @db.VarChar(255)
+  last_name           String               @db.VarChar(255)
+  username            String               @db.VarChar(255)
+  password_hash       String               @db.VarChar(255)
+  email               String               @db.VarChar(255)
+  creation_date       DateTime?            @db.Date
+  house               House                @relation(fields: [house_id], references: [house_id])
+  house_id            Int
+  ref_avatar          Int
+  consumption_history ConsumptionHistory[]
+  PendingInvites      PendingInvites[]
+  UserPayment         UserPayment[]
+  UserRoutine         UserRoutine[]
+  UserTask            UserTask[]
+
+  @@index([house_id], map: "house_id_idx")
+  @@map("user")
+}
+
+model UserPayment {
+  payment             PaymentHistory @relation(fields: [payment_id], references: [payment_id])
+  payment_id          Int
+  user                User           @relation(fields: [user_id], references: [user_id])
+  user_id             Int
+  payment_percentage  Float          @db.Float
+  user_has_payment_id Int            @id @default(autoincrement())
+
+  //@@id([payment_id, user_id])
+  @@index([payment_id], map: "payment_id_idx")
+  @@index([user_id], map: "user_id_idx")
+  @@map("user_has_payment")
+}
+
+model UserRoutine {
+  routine_id                  Int                  @id @default(autoincrement())
+  user                        User                 @relation(fields: [user_id], references: [user_id])
+  user_id                     Int
+  duration_routine            Int                  @db.Int()
+  creation_routine            DateTime             @db.DateTime(0)
+  task                        Int                  @db.Int()
+  weekdays                    Json                 @db.Json()
+  period_time                 Json                 @db.Json()
+  consumption_history_entries ConsumptionHistory[]
+
+  @@index([user_id], map: "user_id_idx")
+  @@map("user_routine")
+}
+
+model UserTask {
+  task_id                     Int                  @id @default(autoincrement())
+  user                        User                 @relation(fields: [user_id], references: [user_id])
+  user_id                     Int
+  start_time                  DateTime?            @db.DateTime(0)
+  end_time                    DateTime?            @db.DateTime(0)
+  duration                    Int?                 @db.Int()
+  task                        Int                  @db.Int()
+  consumption_history_entries ConsumptionHistory[]
+
+  @@index([user_id], map: "user_id_idx")
+  @@map("user_task")
+}
