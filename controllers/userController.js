@@ -153,13 +153,6 @@ router.get("/:user_id/payment", async function (req, res) {
     where: {
       user_id: parseInt(user_id),
     },
-    include: {
-      house: {
-        select: {
-          value_payment: true,
-        },
-      },
-    },
   });
   res.json(payments);
 });
