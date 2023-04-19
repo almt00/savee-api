@@ -156,11 +156,11 @@ router.get("/:user_id/payment", async function (req, res) {
     include: {
       house: {
         select: {
-          house_id: true,
           value_payment: true,
         },
-      }
-  }});
+      },
+    },
+  });
   res.json(payments);
 });
 
@@ -170,6 +170,13 @@ router.get("/:user_id/payment/:payment_id", async function (req, res) {
     where: {
       user_id: parseInt(user_id),
       payment_id: parseInt(payment_id), // aqui não tenho a crtz se é pelo id de pagamento referente (casa) ou pelo id do pagamento nesta tabela
+    },
+    include: {
+      house: {
+        select: {
+          value_payment: true,
+        },
+      },
     },
   });
   res.json(payment);
