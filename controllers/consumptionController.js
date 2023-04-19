@@ -14,16 +14,16 @@ router.get("(/user/:user_id)", async function (req, res) {
           start_time: true,
           end_time: true,
           task: true,
-        }
+        },
       },
       routine: {
         select: {
           duration_routine: true,
           creation_routine: true,
           task: true,
-        }
+        },
       },
-    }
+    },
   });
   res.json(user_consumptions);
 });
@@ -33,6 +33,22 @@ router.get("/house/:house_id", async (req, res) => {
   const house_consumptions = await prisma.consumptionHistory.findMany({
     where: {
       house_id: parseInt(house_id),
+    },
+    include: {
+      task: {
+        select: {
+          start_time: true,
+          end_time: true,
+          task: true,
+        },
+      },
+      routine: {
+        select: {
+          duration_routine: true,
+          creation_routine: true,
+          task: true,
+        },
+      },
     },
   });
   res.json(house_consumptions);
