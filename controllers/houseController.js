@@ -46,7 +46,11 @@ router.get("/:house_id/payment/:payment_id", async (req, res) => {
     },
     include: {
       UserPayment: true,
-      User: true,
+      User: {
+        select: {
+          first_name: true,
+        },
+      },
     },
   });
   res.json(payment);
