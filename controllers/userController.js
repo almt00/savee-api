@@ -153,14 +153,19 @@ router.get("/:user_id/payment", async function (req, res) {
     where: {
       user_id: parseInt(user_id),
     },
+    orderBy: {
+      payment: {
+        date_payment: "desc",
+      },
+    },
     include: {
       payment: {
         select: {
           date_payment: true,
           value_payment: true,
-        }
-      }
-    }
+        },
+      },
+    },
   });
   res.json(payments);
 });
