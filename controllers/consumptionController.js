@@ -8,6 +8,9 @@ router.get("(/user/:user_id)", async function (req, res) {
     where: {
       user_id: parseInt(user_id),
     },
+    orderBy: {
+      consumption_date: "desc",
+    },
     include: {
       task: {
         select: {
