@@ -31,14 +31,14 @@ router.get("(/user/:user_id)", async function (req, res) {
   res.json(user_consumptions);
 });
 
-router.get("(user/:user_id/today)", async function (req, res) {
+router.get("(/user/:user_id/today)", async function (req, res) {
   const { user_id } = req.params;
   const today_consumptions = await prisma.consumptionHistory.findMany({
     where: {
       user_id: parseInt(user_id),
       consumption_date: {
         gte: new Date(new Date().setHours(0, 0, 0, 0)),
-      }
+      },
     },
     include: {
       task: {
