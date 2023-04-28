@@ -170,6 +170,28 @@ router.get("/:user_id/payment", async function (req, res) {
   res.json(payments);
 });
 
+router.get("/:user_id/payment/date_payment", async function (req, res) {
+  const { user_id } = req.params;
+  const date_payment = await prisma.userPayment.findFirst({
+    where: {
+      user_id: parseInt(user_id),
+    },
+    orderBy: {
+      payment: {
+        date_payment: "desc",
+      },
+    },
+    include: {
+      payment: {
+        select: {
+          date_payment: true,
+        },
+      },
+    },
+  });
+  res.json(date_payment);
+});
+
 router.get("/:user_id/payment/:payment_id", async function (req, res) {
   const { user_id, payment_id } = req.params;
   const payment = await prisma.userPayment.findFirst({
