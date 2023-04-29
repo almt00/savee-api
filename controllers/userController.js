@@ -1,6 +1,7 @@
 const express = require("express");
 const prisma = require("../lib/prisma.js");
 const router = express.Router();
+const consumptionController = require("./consumptionController.js");
 
 // users list route
 router.get("/", async function (req, res) {
@@ -201,6 +202,28 @@ router.get("/:user_id/payment/:payment_id", async function (req, res) {
     },
   });
   res.json(payment);
+});
+
+router.get("/:user_id/payment/:payment_id/insights", async function (req, res) {
+  const { user_id, payment_id } = req.params;
+  const { user_consumption } = await consumptionController.get(
+    "/user/:user_id"
+  );
+  const payment_insights = await prisma.userPayment.findFirst({
+    where: {
+      user_id: parseInt(user_id),
+      payment_id: parseInt(payment_id), // aqui não tenho a crtz se é pelo id de pagamento referente (casa) ou pelo id do pagamento nesta tabela
+    },
+    include: {
+      payment: {
+        select: {
+          date_payment: true,
+          value_payment: true,
+        },
+      },
+    },
+  });
+  res.json(payment_insights);
 });
 
 module.exports = router;

@@ -4,7 +4,6 @@ const bodyParser = require("body-parser");
 const user = require("./controllers/userController.js");
 const house = require("./controllers/houseController.js");
 const consumption = require("./controllers/consumptionController.js");
-const insights = require("./controllers/insightsController.js");
 
 const app = express();
 
@@ -19,7 +18,6 @@ app.get("/", (req, res) => {
 app.use("/user", user);
 app.use("/house", house);
 app.use("/consumption", consumption);
-app.use("/insights", insights);
 
 const port = process.env.PORT || 3001;
 app.listen(port, () => {
