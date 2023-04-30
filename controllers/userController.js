@@ -1,6 +1,7 @@
 const express = require("express");
 const prisma = require("../lib/prisma.js");
 const router = express.Router();
+const consumptionController = require("./consumptionController.js");
 
 // users list route
 router.get("/", async function (req, res) {
@@ -202,5 +203,103 @@ router.get("/:user_id/payment/:payment_id", async function (req, res) {
   });
   res.json(payment);
 });
+
+router.get("/:user_id/payment/:payment_id/insights", async function (req, res) {
+  const { user_id, payment_id } = req.params;
+  const user_consumption = await prisma.consumptionHistory.findMany({
+    where: {
+      user_id: parseInt(user_id),
+    },
+    include: {
+      task: {
+        select: {
+          task: true,
+          start_time: true,
+          end_time: true,
+        },
+      },
+      routine: {
+        select: {
+          duration_routine: true,
+          task: true,
+        },
+      },
+    },
+  });
+
+  let consumption = [];
+  if (user_consumption) {
+    consumption = user_consumption.filter(
+      (consumption) => consumption.payment_id === parseInt(payment_id)
+    );
+  }
+
+  const payment = await prisma.userPayment.findFirst({
+    where: {
+      user_id: parseInt(user_id),
+      payment_id: parseInt(payment_id),
+    },
+  });
+
+  const insights = {
+    payment: payment,
+    consumption: consumption,
+  };
+
+  res.json(insights);
+});
+
+// filter consumptions by task
+router.get(
+  "/:user_id/payment/:payment_id/insights/:task",
+  async function (req, res) {
+    const { user_id, payment_id, task } = req.params;
+    const user_consumption = await prisma.consumptionHistory.findMany({
+      where: {
+        user_id: parseInt(user_id),
+      },
+      include: {
+        task: {
+          select: {
+            task: true,
+            start_time: true,
+            end_time: true,
+          },
+        },
+        routine: {
+          select: {
+            duration_routine: true,
+            task: true,
+          },
+        },
+      },
+    });
+
+    let consumption = [];
+    if (user_consumption) {
+      consumption = user_consumption.filter(
+        (consumption) =>
+          consumption.payment_id === parseInt(payment_id) &&
+          ((consumption.task && consumption.task.task === parseInt(task)) ||
+            (consumption.routine &&
+              consumption.routine.task === parseInt(task)))
+      );
+    }
+
+    const payment = await prisma.userPayment.findFirst({
+      where: {
+        user_id: parseInt(user_id),
+        payment_id: parseInt(payment_id),
+      },
+    });
+
+    const insights = {
+      payment: payment,
+      consumption: consumption,
+    };
+
+    res.json(insights);
+  }
+);
 
 module.exports = router;
