@@ -206,24 +206,47 @@ router.get("/:user_id/payment/:payment_id", async function (req, res) {
 
 router.get("/:user_id/payment/:payment_id/insights", async function (req, res) {
   const { user_id, payment_id } = req.params;
-  const { user_consumption } = await consumptionController.get(
-    "/user/:user_id"
-  );
-  const payment_insights = await prisma.userPayment.findFirst({
+  const user_consumption = await prisma.consumptionHistory.findMany({
     where: {
       user_id: parseInt(user_id),
-      payment_id: parseInt(payment_id), // aqui não tenho a crtz se é pelo id de pagamento referente (casa) ou pelo id do pagamento nesta tabela
     },
     include: {
-      payment: {
+      task: {
         select: {
-          date_payment: true,
-          value_payment: true,
+          task: true,
+          start_time: true,
+          end_time: true,
+        },
+      },
+      routine: {
+        select: {
+          duration_routine: true,
+          task: true,
         },
       },
     },
   });
-  res.json(payment_insights);
+
+  let consumption = [];
+  if (user_consumption) {
+    consumption = user_consumption.filter(
+      (consumption) => consumption.payment_id === parseInt(payment_id)
+    );
+  }
+
+  const payment = await prisma.userPayment.findFirst({
+    where: {
+      user_id: parseInt(user_id),
+      payment_id: parseInt(payment_id),
+    },
+  });
+
+  const insights = {
+    payment: payment,
+    consumption: consumption,
+  };
+
+  res.json(insights);
 });
 
 module.exports = router;
