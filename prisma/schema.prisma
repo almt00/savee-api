@@ -3,8 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
   relationMode = "prisma"
 }
 
@@ -12,7 +12,7 @@ model ConsumptionHistory {
   consumption_id   Int            @id @default(autoincrement())
   house            House          @relation(fields: [house_id], references: [house_id])
   house_id         Int
-  user             User      @relation(fields: [user_id], references: [user_id])
+  user             User           @relation(fields: [user_id], references: [user_id])
   user_id          String
   payment          PaymentHistory @relation(fields: [payment_id], references: [payment_id])
   payment_id       Int
@@ -86,12 +86,12 @@ model Session {
 }
 
 model VerificationRequest {
-  id           String       @id @default(cuid())
-  identifier   String
-  token        String       @unique
-  expires      DateTime
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
+  id         String   @id @default(cuid())
+  identifier String
+  token      String   @unique
+  expires    DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   @@unique([identifier, token])
 }
