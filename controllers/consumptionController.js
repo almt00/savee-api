@@ -64,8 +64,9 @@ router.get("(/user/:user_id/today)", async function (req, res) {
 router.get("(/user/:user_id/current_period)", async function (req, res) {
   const { user_id } = req.params;
   const { date_payment } = await userController.get(
-    "/:user_id/payment/date_payment"
+    `/${user_id}/payment/date_payment`
   );
+  console.log(date_payment);
   let gteDate = new Date();
   let lteDate = new Date();
 
