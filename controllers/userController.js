@@ -14,7 +14,7 @@ router.get("/:user_id", async function (req, res) {
   const { user_id } = req.params;
   const user = await prisma.user.findFirst({
     where: {
-      user_id: parseInt(user_id),
+      user_id: user_id,
     },
   });
   res.json(user);
