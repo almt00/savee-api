@@ -1,7 +1,6 @@
 const express = require("express");
 const prisma = require("../lib/prisma.js");
 const router = express.Router();
-const consumptionController = require("./consumptionController.js");
 
 // users list route
 router.get("/", async function (req, res) {
@@ -14,7 +13,7 @@ router.get("/:user_id", async function (req, res) {
   const { user_id } = req.params;
   const user = await prisma.user.findFirst({
     where: {
-      user_id: parseInt(user_id),
+      user_id: user_id,
     },
   });
   res.json(user);
@@ -62,7 +61,7 @@ router.get("/:user_id/task", async function (req, res) {
   const { user_id } = req.params;
   const tasks = await prisma.userTask.findMany({
     where: {
-      user_id: parseInt(user_id),
+      user_id: user_id,
     },
   });
   res.json(tasks);
@@ -74,7 +73,7 @@ router.post("/:user_id/task", async function (req, res) {
   const { start_time, end_time, duration, task_id } = req.body;
   await prisma.userTask.create({
     data: {
-      user_id: parseInt(user_id),
+      user_id: user_id,
       start_time: new Date(start_time),
       end_time: new Date(end_time),
       duration: parseInt(duration), // isto vai ser calculado aqui ou no frontend?
@@ -87,7 +86,7 @@ router.get("/:user_id/task/:task_id", async function (req, res) {
   const { user_id, task_id } = req.params;
   const task = await prisma.userTask.findFirst({
     where: {
-      user_id: parseInt(user_id),
+      user_id: user_id,
       task_id: parseInt(task_id),
     },
   });
@@ -103,7 +102,7 @@ router.get("/:user_id/routine", async function (req, res) {
   const { user_id } = req.params;
   const routines = await prisma.userRoutine.findMany({
     where: {
-      user_id: parseInt(user_id),
+      user_id: user_id,
     },
   });
   res.json(routines);
@@ -113,7 +112,7 @@ router.get("/:user_id/routine/:routine_id", async function (req, res) {
   const { user_id, routine_id } = req.params;
   const routine = await prisma.userRoutine.findFirst({
     where: {
-      user_id: parseInt(user_id),
+      user_id: user_id,
       routine_id: parseInt(routine_id),
     },
   });
@@ -126,7 +125,7 @@ router.post("/:user_id/routine", async function (req, res) {
     req.body;
   await prisma.userRoutine.create({
     data: {
-      user_id: parseInt(user_id),
+      user_id: user_id,
       duration_routine: parseInt(duration_routine), // em segundos
       creation_routine: new Date(creation_routine),
       task: task_id,
@@ -152,7 +151,7 @@ router.get("/:user_id/payment", async function (req, res) {
   const { user_id } = req.params;
   const payments = await prisma.userPayment.findMany({
     where: {
-      user_id: parseInt(user_id),
+      user_id: user_id,
     },
     orderBy: {
       payment: {
@@ -175,7 +174,7 @@ router.get("/:user_id/payment/date_payment", async function (req, res) {
   const { user_id } = req.params;
   const date_payment = await prisma.userPayment.findFirst({
     where: {
-      user_id: parseInt(user_id),
+      user_id: user_id,
     },
     orderBy: {
       payment: {
@@ -197,7 +196,7 @@ router.get("/:user_id/payment/:payment_id", async function (req, res) {
   const { user_id, payment_id } = req.params;
   const payment = await prisma.userPayment.findFirst({
     where: {
-      user_id: parseInt(user_id),
+      user_id: user_id,
       payment_id: parseInt(payment_id), // aqui não tenho a crtz se é pelo id de pagamento referente (casa) ou pelo id do pagamento nesta tabela
     },
   });
@@ -208,7 +207,7 @@ router.get("/:user_id/payment/:payment_id/insights", async function (req, res) {
   const { user_id, payment_id } = req.params;
   const user_consumption = await prisma.consumptionHistory.findMany({
     where: {
-      user_id: parseInt(user_id),
+      user_id: user_id,
     },
     include: {
       task: {
@@ -236,7 +235,7 @@ router.get("/:user_id/payment/:payment_id/insights", async function (req, res) {
 
   const payment = await prisma.userPayment.findFirst({
     where: {
-      user_id: parseInt(user_id),
+      user_id: user_id,
       payment_id: parseInt(payment_id),
     },
   });
@@ -256,7 +255,7 @@ router.get(
     const { user_id, payment_id, task } = req.params;
     const user_consumption = await prisma.consumptionHistory.findMany({
       where: {
-        user_id: parseInt(user_id),
+        user_id: user_id,
       },
       include: {
         task: {
@@ -288,7 +287,7 @@ router.get(
 
     const payment = await prisma.userPayment.findFirst({
       where: {
-        user_id: parseInt(user_id),
+        user_id: user_id,
         payment_id: parseInt(payment_id),
       },
     });
