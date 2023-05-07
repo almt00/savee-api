@@ -1,7 +1,7 @@
 const express = require("express");
 const prisma = require("../lib/prisma.js");
-const router = express.Router();
 const userController = require("./userController.js");
+const router = express.Router();
 
 router.get("(/user/:user_id)", async function (req, res) {
   const { user_id } = req.params;
@@ -66,7 +66,6 @@ router.get("(/user/:user_id/current_period)", async function (req, res) {
   const { date_payment } = await userController.get(
     `/${user_id}/payment/date_payment`
   );
-  console.log(date_payment);
   let gteDate = new Date();
   let lteDate = new Date();
 

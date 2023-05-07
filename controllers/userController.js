@@ -1,7 +1,6 @@
 const express = require("express");
 const prisma = require("../lib/prisma.js");
 const router = express.Router();
-const consumptionController = require("./consumptionController.js");
 
 // users list route
 router.get("/", async function (req, res) {
