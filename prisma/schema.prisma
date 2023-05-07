@@ -3,9 +3,10 @@ generator client {
 }
 
 datasource db {
-  provider     = "mysql"
-  url          = env("DATABASE_URL")
-  relationMode = "prisma"
+  provider          = "mysql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+  relationMode      = "prisma"
 }
 
 model ConsumptionHistory {
@@ -65,7 +66,7 @@ model Account {
   accessToken        String?
   accessTokenExpires DateTime?
   createdAt          DateTime  @default(now())
-  updatedAt          DateTime  @updatedAt
+  updatedAt          DateTime  @updatedAt @default(now())
   user               User      @relation(fields: [user_id], references: [user_id])
 
   @@unique([providerId, providerAccountId])
@@ -79,7 +80,7 @@ model Session {
   sessionToken String   @unique
   accessToken  String   @unique
   createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  updatedAt    DateTime @updatedAt @default(now())
   user         User     @relation(fields: [user_id], references: [user_id])
 
   @@index([user_id])
@@ -91,7 +92,7 @@ model VerificationRequest {
   token      String   @unique
   expires    DateTime
   createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  updatedAt  DateTime @updatedAt @default(now())
 
   @@unique([identifier, token])
 }
@@ -104,7 +105,7 @@ model User {
   email               String?              @unique
   emailVerified       DateTime?
   createdAt           DateTime             @default(now())
-  updatedAt           DateTime             @updatedAt
+  updatedAt           DateTime             @updatedAt @default(now())
   accounts            Account[]
   sessions            Session[]
   house               House                @relation(fields: [house_id], references: [house_id])
