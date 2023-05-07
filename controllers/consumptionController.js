@@ -78,7 +78,7 @@ router.get("(/user/:user_id/current_period)", async function (req, res) {
 
   const current_period_consumptions = await prisma.consumptionHistory.findMany({
     where: {
-      user_id: user_id,
+      user_id: "user_id",
       consumption_date: {
         // greater than or equal to last date_payment  and less than or equal to today
         lte: new Date(lteDate.setHours(0, 0, 0, 0)),
