@@ -5,9 +5,9 @@ const user = require("./controllers/userController.js");
 const house = require("./controllers/houseController.js");
 const consumption = require("./controllers/consumptionController.js");
 const auth = require("./controllers/authController.js");
-const logger = require("morgan");
 const passport = require("passport");
 const session = require("express-session");
+const path = require("path");
 const SQLiteStore = require("connect-sqlite3")(session);
 
 const app = express();
@@ -15,13 +15,14 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, '..', 'savee', 'public')));
+app.set("view engine", "ejs");
 app.use(
   session({
     secret: "keyboard cat",
     resave: false,
     saveUninitialized: false,
-    store: new SQLiteStore({ db: "sessions.db", dir: "./var/db" }),
+    store: new SQLiteStore(),
   })
 );
 app.use(passport.authenticate("session"));
