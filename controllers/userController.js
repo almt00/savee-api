@@ -1,6 +1,15 @@
 const express = require("express");
 const prisma = require("../lib/prisma.js");
 const router = express.Router();
+const bcrypt = require('bcrypt');
+const { SALT_ROUNDS = 10 } = process.env;
+
+const prisma = new PrismaClient();
+
+// hash password
+async function hashPassword(rawPassword) {
+  return bcrypt.hash(rawPassword, SALT_ROUNDS);
+}
 
 // users list route
 router.get("/", async function (req, res) {
@@ -32,12 +41,15 @@ router.post("/", async (req, res) => {
     ref_avatar,
   } = req.body;
 
+  // ensure that the password is hashed before being stored
+  const hashedPassword = await hashPassword(password_hash);
+
   await prisma.user.create({
     data: {
       first_name: first_name,
       last_name: last_name,
       username: username,
-      password_hash: password_hash,
+      password_hash: hashedPassword,
       email: email,
       creation_date: new Date(creation_date),
       house_id: house_id,
