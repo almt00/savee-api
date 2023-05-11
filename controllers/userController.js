@@ -77,7 +77,7 @@ router.post("/login", async (req, res) => {
   if (!user) throw UnauthorizedError();
 
   // check if password is valid
-  const isPwValid = await bcrypt.compare(password, user.password);
+  const isPwValid = await bcrypt.compare(password_hash, user.password_hash);
   if (!isPwValid) throw UnauthorizedError();
 
   res.json(
