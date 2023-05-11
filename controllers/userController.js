@@ -2,7 +2,7 @@ const express = require("express");
 const prisma = require("../lib/prisma.js");
 const router = express.Router();
 const bcrypt = require("bcrypt");
-const { SALT_ROUNDS = 10 } = process.env;
+const SALT_ROUNDS = env.SALT_ROUNDS || 10;
 
 // hash password
 async function hashPassword(rawPassword) {
