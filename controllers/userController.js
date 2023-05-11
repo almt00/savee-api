@@ -1,7 +1,7 @@
 const express = require("express");
 const prisma = require("../lib/prisma.js");
 const router = express.Router();
-const bcrypt = require('bcrypt');
+const bcrypt = require("bcrypt");
 const { SALT_ROUNDS = 10 } = process.env;
 
 const prisma = new PrismaClient();
@@ -41,6 +41,10 @@ router.post("/", async (req, res) => {
     ref_avatar,
   } = req.body;
 
+  // check if user already exists
+  const exists = await prisma.user.findUnique({ where: { email } });
+  if (exists) throw ConflictError("User with that email already exists");
+
   // ensure that the password is hashed before being stored
   const hashedPassword = await hashPassword(password_hash);
 
@@ -56,6 +60,31 @@ router.post("/", async (req, res) => {
       ref_avatar: ref_avatar,
     },
   });
+  // generate user token
+  res.json(
+    success(user, {
+      token: generateAuthToken(user),
+    })
+  );
+});
+
+// login user
+router.post("/login", async (req, res) => {
+  const { email, password_hash } = req.body;
+
+  // check if user exists
+  const user = await prisma.user.findUnique({ where: { email } });
+  if (!user) throw UnauthorizedError();
+
+  // check if password is valid
+  const isPwValid = await bcrypt.compare(password, user.password);
+  if (!isPwValid) throw UnauthorizedError();
+
+  res.json(
+    success(user, {
+      token: generateAuthToken(user),
+    })
+  );
 });
 
 //update user info
