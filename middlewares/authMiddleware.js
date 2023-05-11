@@ -1,8 +1,10 @@
-const jwt = require("jsonwebtoken");
-const { UserModel } = require("../schema.prisma"); // não sei se é assim
-const { error } = require("../utils/apiResponse");
+import { verify, decode } from "jsonwebtoken";
+import { PrismaClient } from "@prisma/client";
+import { error } from "../utils/apiResponse";
 
-module.exports = async function authMiddleware(req, res, next) {
+const prisma = new PrismaClient();
+
+export default async function authMiddleware(req, res, next) {
   let token;
 
   // Retirar o token do header do request ou das cookies
@@ -22,23 +24,22 @@ module.exports = async function authMiddleware(req, res, next) {
 
   try {
     // validação se o token é valido
-    const isValid = jwt.verify(token, process.env.TOKEN_SECRET);
+    const isValid = verify(token, process.env.TOKEN_SECRET);
     if (!isValid) {
       res.status(401).send(error("Unauthorized", 401));
       return;
     }
 
     // se for válido extraímos a data
-    const { sub: userId, exp } = await jwt.decode(token);
+    const { sub: userId, exp } = await decode(token);
 
     if (exp <= Math.floor(Date.now() / 1000)) {
       res.status(401).send(error("Unauthorized", 401));
       return;
     }
 
-    const user = await UserModel.findByPk(userId, {
-      include: [RoleModel],
-      attributes: { exclude: ["RoleId", "password"] },
+    const user = await prisma.user.findUnique({
+      where: { user_id: userId },
     });
 
     if (!user) {
@@ -51,4 +52,4 @@ module.exports = async function authMiddleware(req, res, next) {
   } catch (e) {
     res.status(401).send(error("Unauthorized", 401));
   }
-};
+}
