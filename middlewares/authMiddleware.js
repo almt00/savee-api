@@ -1,4 +1,4 @@
-/* import { verify, decode } from "jsonwebtoken";
+import { verify, decode } from "jsonwebtoken";
 const prisma = require("../lib/prisma.js");
 import { error } from "../utils/apiResponse";
 
@@ -51,4 +51,3 @@ export default async function authMiddleware(req, res, next) {
     res.status(401).send(error("Unauthorized", 401));
   }
 }
-*/
