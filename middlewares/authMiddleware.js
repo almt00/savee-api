@@ -1,8 +1,6 @@
 import { verify, decode } from "jsonwebtoken";
-import { PrismaClient } from "@prisma/client";
+const prisma = require("../lib/prisma.js");
 import { error } from "../utils/apiResponse";
-
-const prisma = new PrismaClient();
 
 export default async function authMiddleware(req, res, next) {
   let token;
