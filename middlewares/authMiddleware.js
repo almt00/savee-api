@@ -22,7 +22,7 @@ export default async function authMiddleware(req, res, next) {
 
   try {
     // validação se o token é valido
-    const isValid = verify(token, env.TOKEN_SECRET);
+    const isValid = verify(token, process.env.TOKEN_SECRET);
     if (!isValid) {
       res.status(401).send(error("Unauthorized", 401));
       return;
