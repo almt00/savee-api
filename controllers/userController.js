@@ -4,8 +4,6 @@ const router = express.Router();
 const bcrypt = require("bcrypt");
 const { SALT_ROUNDS = 10 } = process.env;
 
-const prisma = new PrismaClient();
-
 // hash password
 async function hashPassword(rawPassword) {
   return bcrypt.hash(rawPassword, SALT_ROUNDS);
