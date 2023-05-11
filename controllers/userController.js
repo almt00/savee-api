@@ -26,7 +26,7 @@ router.get("/:user_id", async function (req, res) {
   res.json(user);
 });
 
-/*
+
 // add user to DB
 router.post("/", async (req, res) => {
   const {
@@ -85,7 +85,6 @@ router.post("/login", async (req, res) => {
     })
   );
 });
-*/
 
 //update user info
 router.put("/:user_id", (req, res) => {
