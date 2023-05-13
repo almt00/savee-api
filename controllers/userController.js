@@ -2,11 +2,12 @@ const express = require("express");
 const prisma = require("../lib/prisma.js");
 const router = express.Router();
 const bcrypt = require("bcrypt");
-const SALT_ROUNDS = process.env.SALT_ROUNDS || 10;
+const { SALT_ROUNDS = 10 } = process.env;
+const generateAuthToken = require("../utils/generateAuthToken.js");
 
 // hash password
 async function hashPassword(rawPassword) {
-  return bcrypt.hash(rawPassword, SALT_ROUNDS);
+  return bcrypt.hash(rawPassword, Number(SALT_ROUNDS));
 }
 
 // users list route
@@ -26,16 +27,14 @@ router.get("/:user_id", async function (req, res) {
   res.json(user);
 });
 
-
 // add user to DB
 router.post("/", async (req, res) => {
   const {
     first_name,
     last_name,
     username,
-    password_hash,
+    password,
     email,
-    creation_date,
     house_id,
     ref_avatar,
   } = req.body;
@@ -45,26 +44,26 @@ router.post("/", async (req, res) => {
   if (exists) throw ConflictError("User with that email already exists");
 
   // ensure that the password is hashed before being stored
-  const hashedPassword = await hashPassword(password_hash);
+  const hashedPassword = await hashPassword(password);
 
-  await prisma.user.create({
+  const user = await prisma.user.create({
     data: {
       first_name: first_name,
       last_name: last_name,
       username: username,
       password_hash: hashedPassword,
       email: email,
-      creation_date: new Date(creation_date),
+      createdAt: new Date(),
       house_id: house_id,
       ref_avatar: ref_avatar,
     },
   });
   // generate user token
-  res.json(
-    success(user, {
-      token: generateAuthToken(user),
-    })
-  );
+  res.json({
+    success: true,
+    user: user,
+    token: generateAuthToken(user),
+  });
 });
 
 // login user
@@ -79,11 +78,11 @@ router.post("/login", async (req, res) => {
   const isPwValid = await bcrypt.compare(password_hash, user.password_hash);
   if (!isPwValid) throw UnauthorizedError();
 
-  res.json(
-    success(user, {
-      token: generateAuthToken(user),
-    })
-  );
+  res.json({
+    success: true,
+    user: user,
+    token: generateAuthToken(user),
+  });
 });
 
 //update user info
