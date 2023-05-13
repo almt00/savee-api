@@ -12,21 +12,5 @@
       "dest": "index.js",
       "methods": ["GET", "POST", "PUT", "PATCH", "DELETE"]
     }
-  ],
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "index.js"
-    }
-  ],
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [{ "key": "Access-Control-Allow-Origin", "value": "*" }]
-    },
-    {
-      "source": "/savee-api.vercel.app/(.*)",
-      "headers": [{ "key": "Access-Control-Allow-Origin", "value": "*" }]
-    }
   ]
 }
