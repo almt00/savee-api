@@ -1,4 +1,4 @@
-const { validationResult } = require("express-validator");
+/*const { validationResult } = require("express-validator");
 const { error } = require("../utils/apiResponse");
 const { ValidationError } = require("../utils/errors");
 
@@ -19,4 +19,4 @@ const validationMiddleware = (...checks) => [
 
 module.exports = {
   validationMiddleware,
-};
+};*/

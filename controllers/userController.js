@@ -4,6 +4,7 @@ const router = express.Router();
 const bcrypt = require("bcrypt");
 const { SALT_ROUNDS = 10 } = process.env;
 const generateAuthToken = require("../utils/generateAuthToken.js");
+const authenticate = require("../middlewares/authMiddleware.js");
 
 // hash password
 async function hashPassword(rawPassword) {
@@ -11,7 +12,8 @@ async function hashPassword(rawPassword) {
 }
 
 // users list route
-router.get("/", async function (req, res) {
+// adding authenticate protects the route
+router.get("/", authenticate, async function (req, res) {
   const users = await prisma.user.findMany();
   res.json(users);
 });
