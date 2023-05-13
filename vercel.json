@@ -20,10 +20,6 @@
     {
       "source": "/savee-api.vercel.app/(.*)",
       "headers": [{ "key": "Access-Control-Allow-Origin", "value": "*" }]
-    },
-    {
-      "source": "/savee-api-git-jwt-setup-savee.vercel.app/(.*)",
-      "headers": [{ "key": "Access-Control-Allow-Origin", "value": "*" }]
     }
   ]
 }
