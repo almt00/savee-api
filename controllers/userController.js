@@ -68,14 +68,14 @@ router.post("/", async (req, res) => {
 
 // login user
 router.post("/login", async (req, res) => {
-  const { email, password_hash } = req.body;
+  const { email, password } = req.body;
 
   // check if user exists
   const user = await prisma.user.findUnique({ where: { email } });
   if (!user) throw UnauthorizedError();
 
   // check if password is valid
-  const isPwValid = await bcrypt.compare(password_hash, user.password_hash);
+  const isPwValid = await bcrypt.compare(password, user.password_hash);
   if (!isPwValid) throw UnauthorizedError();
 
   res.json({
