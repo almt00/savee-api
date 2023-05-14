@@ -1,7 +1,7 @@
 const express = require("express");
 const prisma = require("../lib/prisma.js");
 const router = express.Router();
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const { SALT_ROUNDS = 10 } = process.env;
 const generateAuthToken = require("../utils/generateAuthToken.js");
 const authenticate = require("../middlewares/authMiddleware.js");
