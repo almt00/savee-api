@@ -8,9 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "devStart": "nodemon app.js",
     "vercel-build": "prisma generate",
-    "prisma:generate": "prisma generate",
-    "start": "node index.js",
-    "build": "prisma generate && npm run start"
+    "prisma:generate": "prisma generate"
   },
   "keywords": [],
   "author": "",
