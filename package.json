@@ -9,7 +9,7 @@
     "devStart": "nodemon app.js",
     "vercel-build": "prisma generate",
     "prisma:generate": "prisma generate",
-    "start": "node server.js",
+    "start": "node index.js",
     "build": "prisma generate && npm run start"
   },
   "keywords": [],
