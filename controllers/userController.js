@@ -19,7 +19,7 @@ router.get("/", authenticate, async function (req, res) {
 });
 
 // user details route
-router.get("/:user_id", async function (req, res) {
+router.get("/:user_id", authenticate, async function (req, res) {
   const { user_id } = req.params;
   const user = await prisma.user.findFirst({
     where: {
@@ -88,17 +88,17 @@ router.post("/login", async (req, res) => {
 });
 
 //update user info
-router.put("/:user_id", (req, res) => {
+router.put("/:user_id", authenticate, (req, res) => {
   let data = req.body;
   res.send("user info added: " + JSON.stringify(data));
 });
 
-router.delete("/:user_id", (req, res) => {
+router.delete("/:user_id", authenticate, (req, res) => {
   let data = req.body;
   res.send("user deleted " + JSON.stringify(data));
 });
 
-router.get("/:user_id/task", async function (req, res) {
+router.get("/:user_id/task", authenticate, async function (req, res) {
   const { user_id } = req.params;
   const tasks = await prisma.userTask.findMany({
     where: {
@@ -109,7 +109,7 @@ router.get("/:user_id/task", async function (req, res) {
   console.log(tasks);
 });
 
-router.post("/:user_id/task", async function (req, res) {
+router.post("/:user_id/task", authenticate, async function (req, res) {
   const { user_id } = req.params;
   const { start_time, end_time, duration, task_id } = req.body;
   await prisma.userTask.create({
@@ -123,7 +123,7 @@ router.post("/:user_id/task", async function (req, res) {
   });
 });
 
-router.get("/:user_id/task/:task_id", async function (req, res) {
+router.get("/:user_id/task/:task_id", authenticate, async function (req, res) {
   const { user_id, task_id } = req.params;
   const task = await prisma.userTask.findFirst({
     where: {
@@ -134,12 +134,12 @@ router.get("/:user_id/task/:task_id", async function (req, res) {
   res.json(task);
 });
 
-router.delete("/:user_id/task/:task_id", (req, res) => {
+router.delete("/:user_id/task/:task_id", authenticate, (req, res) => {
   let data = req.body;
   res.send(`task ${req.params.task_id} deleted ` + JSON.stringify(data));
 });
 
-router.get("/:user_id/routine", async function (req, res) {
+router.get("/:user_id/routine", authenticate, async function (req, res) {
   const { user_id } = req.params;
   const routines = await prisma.userRoutine.findMany({
     where: {
@@ -149,18 +149,22 @@ router.get("/:user_id/routine", async function (req, res) {
   res.json(routines);
 });
 
-router.get("/:user_id/routine/:routine_id", async function (req, res) {
-  const { user_id, routine_id } = req.params;
-  const routine = await prisma.userRoutine.findFirst({
-    where: {
-      user_id: user_id,
-      routine_id: parseInt(routine_id),
-    },
-  });
-  res.json(routine);
-});
+router.get(
+  "/:user_id/routine/:routine_id",
+  authenticate,
+  async function (req, res) {
+    const { user_id, routine_id } = req.params;
+    const routine = await prisma.userRoutine.findFirst({
+      where: {
+        user_id: user_id,
+        routine_id: parseInt(routine_id),
+      },
+    });
+    res.json(routine);
+  }
+);
 
-router.post("/:user_id/routine", async function (req, res) {
+router.post("/:user_id/routine", authenticate, async function (req, res) {
   const { user_id } = req.params;
   const { duration_routine, creation_routine, task_id, weekdays, period_time } =
     req.body;
@@ -176,19 +180,19 @@ router.post("/:user_id/routine", async function (req, res) {
   });
 });
 
-router.put("/:user_id/routine/:routine_id", function (req, res) {
+router.put("/:user_id/routine/:routine_id", authenticate, function (req, res) {
   let data = req.body;
   res.send(
     `user's ${req.params.routine_id}º routine updated: ${JSON.stringify(data)}`
   );
 });
 
-router.delete("/:user_id/routine/:routine_id", (req, res) => {
+router.delete("/:user_id/routine/:routine_id", authenticate, (req, res) => {
   let data = req.body;
   res.send(`routine ${req.params.routine_id} deleted ` + JSON.stringify(data));
 });
 
-router.get("/:user_id/payment", async function (req, res) {
+router.get("/:user_id/payment", authenticate, async function (req, res) {
   const { user_id } = req.params;
   const payments = await prisma.userPayment.findMany({
     where: {
@@ -211,87 +215,100 @@ router.get("/:user_id/payment", async function (req, res) {
   res.json(payments);
 });
 
-router.get("/:user_id/payment/date_payment", async function (req, res) {
-  const { user_id } = req.params;
-  const date_payment = await prisma.userPayment.findFirst({
-    where: {
-      user_id: user_id,
-    },
-    orderBy: {
-      payment: {
-        date_payment: "desc",
+router.get(
+  "/:user_id/payment/date_payment",
+  authenticate,
+  async function (req, res) {
+    const { user_id } = req.params;
+    const date_payment = await prisma.userPayment.findFirst({
+      where: {
+        user_id: user_id,
       },
-    },
-    include: {
-      payment: {
-        select: {
-          date_payment: true,
+      orderBy: {
+        payment: {
+          date_payment: "desc",
         },
       },
-    },
-  });
-  res.json(date_payment);
-});
-
-router.get("/:user_id/payment/:payment_id", async function (req, res) {
-  const { user_id, payment_id } = req.params;
-  const payment = await prisma.userPayment.findFirst({
-    where: {
-      user_id: user_id,
-      payment_id: parseInt(payment_id), // aqui não tenho a crtz se é pelo id de pagamento referente (casa) ou pelo id do pagamento nesta tabela
-    },
-  });
-  res.json(payment);
-});
-
-router.get("/:user_id/payment/:payment_id/insights", async function (req, res) {
-  const { user_id, payment_id } = req.params;
-  const user_consumption = await prisma.consumptionHistory.findMany({
-    where: {
-      user_id: user_id,
-    },
-    include: {
-      task: {
-        select: {
-          task: true,
-          start_time: true,
-          end_time: true,
+      include: {
+        payment: {
+          select: {
+            date_payment: true,
+          },
         },
       },
-      routine: {
-        select: {
-          duration_routine: true,
-          task: true,
-        },
-      },
-    },
-  });
-
-  let consumption = [];
-  if (user_consumption) {
-    consumption = user_consumption.filter(
-      (consumption) => consumption.payment_id === parseInt(payment_id)
-    );
+    });
+    res.json(date_payment);
   }
+);
 
-  const payment = await prisma.userPayment.findFirst({
-    where: {
-      user_id: user_id,
-      payment_id: parseInt(payment_id),
-    },
-  });
+router.get(
+  "/:user_id/payment/:payment_id",
+  authenticate,
+  async function (req, res) {
+    const { user_id, payment_id } = req.params;
+    const payment = await prisma.userPayment.findFirst({
+      where: {
+        user_id: user_id,
+        payment_id: parseInt(payment_id), // aqui não tenho a crtz se é pelo id de pagamento referente (casa) ou pelo id do pagamento nesta tabela
+      },
+    });
+    res.json(payment);
+  }
+);
 
-  const insights = {
-    payment: payment,
-    consumption: consumption,
-  };
+router.get(
+  "/:user_id/payment/:payment_id/insights",
+  authenticate,
+  async function (req, res) {
+    const { user_id, payment_id } = req.params;
+    const user_consumption = await prisma.consumptionHistory.findMany({
+      where: {
+        user_id: user_id,
+      },
+      include: {
+        task: {
+          select: {
+            task: true,
+            start_time: true,
+            end_time: true,
+          },
+        },
+        routine: {
+          select: {
+            duration_routine: true,
+            task: true,
+          },
+        },
+      },
+    });
 
-  res.json(insights);
-});
+    let consumption = [];
+    if (user_consumption) {
+      consumption = user_consumption.filter(
+        (consumption) => consumption.payment_id === parseInt(payment_id)
+      );
+    }
+
+    const payment = await prisma.userPayment.findFirst({
+      where: {
+        user_id: user_id,
+        payment_id: parseInt(payment_id),
+      },
+    });
+
+    const insights = {
+      payment: payment,
+      consumption: consumption,
+    };
+
+    res.json(insights);
+  }
+);
 
 // filter consumptions by task
 router.get(
   "/:user_id/payment/:payment_id/insights/:task",
+  authenticate,
   async function (req, res) {
     const { user_id, payment_id, task } = req.params;
     const user_consumption = await prisma.consumptionHistory.findMany({
