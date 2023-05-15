@@ -5,7 +5,7 @@ const authenticate = expressjwt({
   issuer: process.env.TOKEN_ISSUER,
   algorithms: ["HS256"],
   requestProperty: "auth",
-  getToken: function fromHeaderOrQuerystring(req, res, next) {
+  getToken: function fromHeaderOrQuerystring(req) {
     if (
       req.headers.authorization &&
       req.headers.authorization.split(" ")[0] === "Bearer"
