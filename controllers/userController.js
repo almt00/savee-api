@@ -87,12 +87,14 @@ router.post("/login", async (req, res) => {
   });
 });
 
-/*// logout user
-router.post("/logout", logout, (req, res) => {
+// logout user
+router.post("/logout", async (req, res) => {
+  res.clearCookie("token");
   res.json({
     success: true,
+    message: "User logged out",
   });
-});*/
+});
 
 //update user info
 router.put("/:user_id", authenticate, (req, res) => {
