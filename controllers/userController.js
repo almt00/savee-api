@@ -4,7 +4,7 @@ const router = express.Router();
 const bcrypt = require("bcryptjs");
 const { SALT_ROUNDS = 10 } = process.env;
 const generateAuthToken = require("../utils/generateAuthToken.js");
-const authenticate = require("../middlewares/authMiddleware.js");
+const { authenticate, logout } = require("../middlewares/authMiddleware.js");
 
 // hash password
 async function hashPassword(rawPassword) {
@@ -84,6 +84,13 @@ router.post("/login", async (req, res) => {
     success: true,
     user: user,
     token: generateAuthToken(user),
+  });
+});
+
+// logout user
+router.post("/logout", logout, (req, res) => {
+  res.json({
+    success: true,
   });
 });
 

@@ -18,4 +18,9 @@ const authenticate = expressjwt({
   },
 });
 
-module.exports = authenticate;
+const logout = (req, res) => {
+  res.clearCookie("token");
+  res.status(200).json({ message: "Logged out" });
+};
+
+module.exports = { authenticate, logout };
