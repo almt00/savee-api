@@ -34,7 +34,9 @@ router.get("/:house_id/payment", authenticate, async (req, res) => {
     where: {
       house_id: parseInt(house_id),
     },
-    orderBy: DESC,
+    orderBy: {
+      date_payment: "desc",
+    },
   });
   res.json(payments);
 });
