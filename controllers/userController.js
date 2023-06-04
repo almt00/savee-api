@@ -175,7 +175,7 @@ router.get(
 
 router.post("/:user_id/routine", authenticate, async function (req, res) {
   const { user_id } = req.params;
-  const { duration_routine, creation_routine, task_id, weekdays, period_time } =
+  const { duration_routine, task_id, weekdays, period_time } =
     req.body;
   await prisma.userRoutine.create({
     data: {
