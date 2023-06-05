@@ -130,6 +130,10 @@ router.post("/:user_id/task", authenticate, async function (req, res) {
       task_id: task_id,
     },
   });
+  res.json({
+    success: true,
+    task: task,
+  });
 });
 
 router.get("/:user_id/task/:task_id", authenticate, async function (req, res) {
