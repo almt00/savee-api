@@ -186,7 +186,10 @@ router.post("/:user_id/routine", authenticate, async function (req, res) {
       period_time: period_time,
     },
   });
-  res.json(routine);
+  res.json({
+    success: true,
+    routine: routine,
+  });
 });
 
 router.put("/:user_id/routine/:routine_id", authenticate, function (req, res) {
