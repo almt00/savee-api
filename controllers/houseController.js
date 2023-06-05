@@ -73,7 +73,10 @@ router.post("/:house_id/payment", authenticate, async (req, res) => {
       value_payment: value_payment,
     },
   });
-  res.json(payment);
+  res.json({
+    success: true,
+    payment: payment,
+  });
 });
 
 module.exports = router;
