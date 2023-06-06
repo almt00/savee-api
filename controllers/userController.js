@@ -127,7 +127,7 @@ router.post("/:user_id/task", authenticate, async function (req, res) {
       start_time: new Date(start_time),
       end_time: new Date(end_time),
       duration: parseInt(duration), // isto vai ser calculado aqui ou no frontend?
-      task_id: task_id,
+      task: task_id,
     },
   });
 });
