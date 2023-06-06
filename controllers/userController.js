@@ -121,7 +121,7 @@ router.get("/:user_id/task", authenticate, async function (req, res) {
 router.post("/:user_id/task", authenticate, async function (req, res) {
   const { user_id } = req.params;
   const { start_time, end_time, duration, task } = req.body;
-  await prisma.userTask.create({
+  const taskData = await prisma.userTask.create({
     data: {
       user_id: user_id,
       start_time: start_time,
@@ -132,7 +132,7 @@ router.post("/:user_id/task", authenticate, async function (req, res) {
   });
   res.json({
     success: true,
-    task: task,
+    task: taskData,
   });
 });
 
