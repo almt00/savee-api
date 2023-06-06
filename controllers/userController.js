@@ -120,14 +120,14 @@ router.get("/:user_id/task", authenticate, async function (req, res) {
 
 router.post("/:user_id/task", authenticate, async function (req, res) {
   const { user_id } = req.params;
-  const { start_time, end_time, duration, task_id } = req.body;
+  const { start_time, end_time, duration, task } = req.body;
   await prisma.userTask.create({
     data: {
       user_id: user_id,
-      start_time: new Date(start_time),
-      end_time: new Date(end_time),
+      start_time: start_time,
+      end_time: end_time,
       duration: parseInt(duration), // isto vai ser calculado aqui ou no frontend?
-      task: task_id,
+      task: task,
     },
   });
   res.json({
