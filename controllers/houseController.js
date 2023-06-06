@@ -34,6 +34,9 @@ router.get("/:house_id/payment", authenticate, async (req, res) => {
     where: {
       house_id: parseInt(house_id),
     },
+    orderBy: {
+      date_payment: "desc",
+    },
   });
   res.json(payments);
 });
@@ -62,15 +65,18 @@ router.get("/:house_id/payment/:payment_id", authenticate, async (req, res) => {
 
 router.post("/:house_id/payment", authenticate, async (req, res) => {
   const { house_id } = req.params;
-  const { date_payment, value_payment } = req.body;
+  const { value_payment } = req.body;
   const payment = await prisma.paymentHistory.create({
     data: {
       house_id: parseInt(house_id),
-      date_payment: new Date(date_payment),
+      date_payment: new Date(),
       value_payment: value_payment,
     },
   });
-  res.json(payment);
+  res.json({
+    success: true,
+    payment: payment,
+  });
 });
 
 module.exports = router;
