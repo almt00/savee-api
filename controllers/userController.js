@@ -132,7 +132,7 @@ router.post("/:user_id/task", authenticate, async function (req, res) {
   });
   res.json({
     success: true,
-    task: data,
+    task: task,
   });
 });
 
