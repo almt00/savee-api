@@ -1,3 +1,7 @@
+/* -------------------------------------------------------------------------- */
+/*                             Ignorar este ficheiro obg                      */
+/* -------------------------------------------------------------------------- */
+
 const prisma = require("../lib/prisma.js");
 
 async function processRoutinesForUser(user_id) {
