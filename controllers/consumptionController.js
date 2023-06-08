@@ -3,6 +3,7 @@ const prisma = require("../lib/prisma.js");
 const userController = require("./userController.js");
 const router = express.Router();
 const authenticate = require("../middlewares/authMiddleware.js");
+const processRoutinesForUser = require("../scheduler.js");
 
 router.get("(/user/:user_id)", authenticate, async function (req, res) {
   const { user_id } = req.params;
@@ -31,6 +32,31 @@ router.get("(/user/:user_id)", authenticate, async function (req, res) {
     },
   });
   res.json(user_consumptions);
+});
+
+router.post("/user/:user_id", authenticate, async function (req, res) {
+  try {
+    const { user_id } = req.params;
+    const { task_id, house_id } = req.body;
+    await processRoutinesForUser(user_id, task_id, house_id);
+    res.json({ success: true });
+  } catch (error) {
+    console.error("Error processing consumption:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+router.post("/user/all", authenticate, async function (req, res) {
+  try {
+    const users = await prisma.user.findMany();
+    for (const user of users) {
+      await processRoutinesForUser(user.user_id);
+    }
+    res.json({ success: true });
+  } catch (error) {
+    console.error("Error processing consumption:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
 
 router.get("(/user/:user_id/today)", authenticate, async function (req, res) {
