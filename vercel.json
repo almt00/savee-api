@@ -24,7 +24,7 @@
   ],
   "crons": [
     {
-      "path": "https://savee-api.vercel.app/consumption/user/all",
+      "path": "/consumption/user/all",
       "schedule": "1 0,12,19 * * *"
     }
   ]
