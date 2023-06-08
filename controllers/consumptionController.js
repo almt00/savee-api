@@ -3,7 +3,7 @@ const prisma = require("../lib/prisma.js");
 const userController = require("./userController.js");
 const router = express.Router();
 const authenticate = require("../middlewares/authMiddleware.js");
-const processRoutinesForUser = require("../scheduler.js");
+//const processRoutinesForUser = require("../scheduler.js");
 
 router.get("(/user/:user_id)", authenticate, async function (req, res) {
   const { user_id } = req.params;
@@ -49,16 +49,45 @@ router.post("/user/:user_id", authenticate, async function (req, res) {
 });
 
 router.post("/user/all", authenticate, async function (req, res) {
-  try {
-    const users = await prisma.user.findMany();
-    for (const user of users) {
-      await processRoutinesForUser(user.user_id);
-    }
-    res.json({ success: true });
-  } catch (error) {
-    console.error("Error processing consumption:", error);
-    res.status(500).json({ error: "Internal server error" });
+  /*const users = await prisma.user.findMany();
+  for (const user of users) {
+    await processRoutinesForUser(user.user_id);
   }
+  res.json({ message: "success" });
+});*/
+
+  const today = new Date();
+  const dayOfWeek = today.getDay(); // 0 (Sunday) to 6 (Saturday)
+  const current_period =
+    today.getHours() < 12
+      ? "morning"
+      : today.getHours() < 19
+      ? "afternoon"
+      : "night";
+
+  const { all_users } = await userController.get("/");
+  for (const user of all_users) {
+    const { routines } = await userController.get(
+      "/" + user.user_id + "/routine"
+    );
+    for (const routine of routines) {
+      const { duration_routine, task, weekdays, period_time } = routine;
+
+      if (weekdays.includes(dayOfWeek) && period_time === current_period) {
+        const { user_id } = user;
+        const { task_id, routine_id, house_id } = routine;
+        const consumption = await prisma.consumptionHistory.create({
+          data: {
+            user_id: user_id,
+            task_id: task_id,
+            routine_id: routine_id,
+            house_id: parseInt(house_id),
+          },
+        });
+      }
+    }
+  }
+  res.json({ message: "success" });
 });
 
 router.get("(/user/:user_id/today)", authenticate, async function (req, res) {
