@@ -35,15 +35,17 @@ router.get("(/user/:user_id)", authenticate, async function (req, res) {
 });
 
 router.post("/user/:user_id", authenticate, async function (req, res) {
-  try {
-    const { user_id } = req.params;
-    const { task_id, house_id } = req.body;
-    await processRoutinesForUser(user_id, task_id, house_id);
-    res.json({ success: true });
-  } catch (error) {
-    console.error("Error processing consumption:", error);
-    res.status(500).json({ error: "Internal server error" });
-  }
+  const { user_id } = req.params;
+  const { task_id, routine_id, house_id } = req.body;
+  const consumption = await prisma.consumptionHistory.create({
+    data: {
+      user_id: user_id,
+      task_id: task_id,
+      routine_id: routine_id,
+      house_id: parseInt(house_id),
+    },
+  });
+  res.json(consumption);
 });
 
 router.post("/user/all", authenticate, async function (req, res) {
