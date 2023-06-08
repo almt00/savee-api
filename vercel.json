@@ -22,22 +22,11 @@
       "headers": [{ "key": "Access-Control-Allow-Origin", "value": "*" }]
     }
   ],
-  "functions": {
-    "consumption/user/all": {
-      "events": [
-        {
-          "http": {
-            "method": "post",
-            "path": "/consumption/user/all"
-          }
-        }
-      ]
-    }
-  },
   "crons": [
     {
       "name": "consume-routine",
       "command": "curl -X POST https://savee-api.vercel.app/consumption/user/all",
+      "path": "/consumption/user/all",
       "schedule": "1 0,12,19 * * *"
     }
   ]
