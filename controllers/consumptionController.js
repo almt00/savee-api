@@ -71,17 +71,27 @@ router.post("/user/all", authenticate, async function (req, res) {
       "/" + user.user_id + "/routine"
     );
     for (const routine of routines) {
-      const { duration_routine, task, weekdays, period_time } = routine;
+      const { weekdays, period_time } = routine;
 
       if (weekdays.includes(dayOfWeek) && period_time === current_period) {
-        const { user_id } = user;
-        const { task_id, routine_id, house_id } = routine;
+        const { user_id, house_id } = user;
+        const { routine_id, duration_routine } = routine;
         const consumption = await prisma.consumptionHistory.create({
           data: {
             user_id: user_id,
-            task_id: task_id,
             routine_id: routine_id,
             house_id: parseInt(house_id),
+            payment_id: null, //mudar isto
+            task: null,
+            task_id: null,
+            consumption: duration_routine,
+            consumption_date: new Date(),
+            type: 0, // não sei o que é isto lmao
+            routine: {
+              connect: {
+                routine_id: routine_id,
+              },
+            },
           },
         });
       }
