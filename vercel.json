@@ -24,7 +24,6 @@
   ],
   "functions": {
     "consumption/user/all": {
-      "handler": "index.js",
       "events": [
         {
           "http": {
