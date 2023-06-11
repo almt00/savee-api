@@ -21,11 +21,5 @@
       "source": "/savee-api.vercel.app/(.*)",
       "headers": [{ "key": "Access-Control-Allow-Origin", "value": "*" }]
     }
-  ],
-  "crons": [
-    {
-      "path": "/consumption/user/all",
-      "schedule": "1 0,12,19 * * *"
-    }
   ]
 }
