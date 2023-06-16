@@ -3,6 +3,7 @@ const prisma = require("../lib/prisma.js");
 const userController = require("./userController.js");
 const router = express.Router();
 const authenticate = require("../middlewares/authMiddleware.js");
+//const processRoutinesForUser = require("../scheduler.js");
 
 router.get("(/user/:user_id)", authenticate, async function (req, res) {
   const { user_id } = req.params;
@@ -31,6 +32,62 @@ router.get("(/user/:user_id)", authenticate, async function (req, res) {
     },
   });
   res.json(user_consumptions);
+});
+
+router.post("/user/all", authenticate, async function (req, res) {
+  const today = new Date();
+  const dayOfWeek = today.getDay(); // 0 (Sunday) to 6 (Saturday)
+  const current_period =
+    today.getHours() < 12
+      ? "morning"
+      : today.getHours() < 19
+      ? "afternoon"
+      : "night";
+
+  // iterate over all users in the database
+  const allUsers = await prisma.user.findMany();
+
+  for (const user of allUsers) {
+    // for each user, get all routines
+    const routines = await prisma.userRoutine.findMany({
+      where: {
+        user_id: user.user_id,
+      },
+    });
+
+    // for each routine, check if it is scheduled for today
+    for (const routine of routines) {
+      const { weekdays, period_time } = routine;
+
+      if (weekdays.includes(dayOfWeek) && period_time === current_period) {
+        const { user_id, house_id } = user;
+        const { routine_id, duration_routine, creation_routine, task } =
+          routine;
+        const consumption = await prisma.consumptionHistory.create({
+          data: {
+            user: user_id,
+            routine_id: routine_id,
+            house: parseInt(house_id),
+            payment: null, //mudar isto
+            task: null,
+            task_id: null,
+            consumption: duration_routine,
+            consumption_date: new Date(),
+            type: 0, // não sei o que é isto lmao
+            routine: {
+              connect: {
+                routine_id: routine_id,
+              },
+              duration_routine: duration_routine,
+              creation_routine: creation_routine,
+              task: task,
+            },
+          },
+        });
+      }
+    }
+  }
+  res.json({ message: "success" });
 });
 
 router.get("(/user/:user_id/today)", authenticate, async function (req, res) {
