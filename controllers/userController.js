@@ -206,6 +206,10 @@ router.put("/:user_id/routine/:routine_id", authenticate, function (req, res) {
 router.delete("/:user_id/routine/:routine_id", authenticate, (req, res) => {
   let data = req.body;
   res.send(`routine ${req.params.routine_id} deleted ` + JSON.stringify(data));
+  res.json({
+    success: true,
+    routine: routine,
+  });
 });
 
 router.get("/:user_id/payment", authenticate, async function (req, res) {
