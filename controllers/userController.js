@@ -212,8 +212,10 @@ router.delete(
     // Check if the routine exists
     const routine = await prisma.userRoutine.findFirst({
       where: {
-        user_id: user_id,
-        routine_id: parseInt(routine_id),
+        user_id_routine_id: {
+          user_id: user_id,
+          routine_id: parseInt(routine_id),
+        },
       },
     });
 
@@ -225,8 +227,10 @@ router.delete(
     // Perform the routine deletion
     await prisma.userRoutine.delete({
       where: {
-        user_id: user_id,
-        routine_id: parseInt(routine_id),
+        user_id_routine_id: {
+          user_id: user_id,
+          routine_id: parseInt(routine_id),
+        },
       },
     });
 
