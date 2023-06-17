@@ -204,11 +204,32 @@ router.put("/:user_id/routine/:routine_id", authenticate, function (req, res) {
 });
 
 router.delete("/:user_id/routine/:routine_id", authenticate, (req, res) => {
-  let data = req.body;
-  res.send(`routine ${req.params.routine_id} deleted ` + JSON.stringify(data));
+  const { user_id, routine_id } = req.params;
+  // Check if the routine exists
+  const routine = prisma.userRoutine.findFirst({
+    where: {
+      user_id: user_id,
+      routine_id: parseInt(routine_id),
+    },
+  });
+
+  if (!routine) {
+    // If the routine is not found, send an appropriate error response
+    return res.status(404).json({ error: "Routine not found." });
+  }
+
+  // Perform the routine deletion
+  prisma.userRoutine.delete({
+    where: {
+      user_id: user_id,
+      routine_id: parseInt(routine_id),
+    },
+  });
+
   res.json({
     success: true,
-    routine: routine,
+    routine: routine_id,
+    message: `Routine ${routine_id} deleted successfully.`,
   });
 });
 
