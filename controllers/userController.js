@@ -210,7 +210,7 @@ router.delete(
     const { user_id, routine_id } = req.params;
 
     // Check if the routine exists
-    const routine = await prisma.userRoutine.findFirst({
+    const routine = await prisma.userRoutine.findMany({
       where: {
         user_id: user_id,
         routine_id: parseInt(routine_id),
@@ -223,7 +223,7 @@ router.delete(
     }
 
     // Delete the routine
-    const deleteRoutine = await prisma.userRoutine.delete({
+    const deleteRoutine = await prisma.userRoutine.deleteMany({
       where: {
         user_id: user_id,
         routine_id: parseInt(routine_id),
