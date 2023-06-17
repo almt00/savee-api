@@ -203,35 +203,40 @@ router.put("/:user_id/routine/:routine_id", authenticate, function (req, res) {
   );
 });
 
-router.delete("/:user_id/routine/:routine_id", authenticate, (req, res) => {
-  const { user_id, routine_id } = req.params;
-  // Check if the routine exists
-  const routine = prisma.userRoutine.findFirst({
-    where: {
-      user_id: user_id,
-      routine_id: parseInt(routine_id),
-    },
-  });
+router.delete(
+  "/:user_id/routine/:routine_id",
+  authenticate,
+  async (req, res) => {
+    const { user_id, routine_id } = req.params;
 
-  if (!routine) {
-    // If the routine is not found, send an appropriate error response
-    return res.status(404).json({ error: "Routine not found." });
+    // Check if the routine exists
+    const routine = await prisma.userRoutine.findFirst({
+      where: {
+        user_id: user_id,
+        routine_id: parseInt(routine_id),
+      },
+    });
+
+    if (!routine) {
+      // If the routine is not found, send an appropriate error response
+      return res.status(404).json({ error: "Routine not found." });
+    }
+
+    // Perform the routine deletion
+    await prisma.userRoutine.delete({
+      where: {
+        user_id: user_id,
+        routine_id: parseInt(routine_id),
+      },
+    });
+
+    res.json({
+      success: true,
+      routine: routine_id,
+      message: `Routine ${routine_id} deleted successfully.`,
+    });
   }
-
-  // Perform the routine deletion
-  prisma.userRoutine.delete({
-    where: {
-      user_id: user_id,
-      routine_id: parseInt(routine_id),
-    },
-  });
-
-  res.json({
-    success: true,
-    routine: routine_id,
-    message: `Routine ${routine_id} deleted successfully.`,
-  });
-});
+);
 
 router.get("/:user_id/payment", authenticate, async function (req, res) {
   const { user_id } = req.params;
