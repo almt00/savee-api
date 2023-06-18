@@ -10,18 +10,18 @@ datasource db {
 }
 
 model ConsumptionHistory {
-  consumption_id   Int            @id @default(autoincrement())
-  house            House          @relation(fields: [house_id], references: [house_id])
+  consumption_id   Int             @id @default(autoincrement())
+  house            House           @relation(fields: [house_id], references: [house_id])
   house_id         Int
-  user             User           @relation(fields: [user_id], references: [user_id])
+  user             User            @relation(fields: [user_id], references: [user_id])
   user_id          String
-  payment          PaymentHistory @relation(fields: [payment_id], references: [payment_id])
-  payment_id       Int
-  routine          UserRoutine?   @relation(fields: [routine_id], references: [routine_id])
+  payment          PaymentHistory? @relation(fields: [payment_id], references: [payment_id])
+  payment_id       Int?
+  routine          UserRoutine?    @relation(fields: [routine_id], references: [routine_id])
   routine_id       Int?
-  task             UserTask?      @relation(fields: [task_id], references: [task_id])
+  task             UserTask?       @relation(fields: [task_id], references: [task_id])
   task_id          Int?
-  consumption_date DateTime       @db.DateTime(0)
+  consumption_date DateTime        @db.DateTime(0)
   consumption      Int
   type             Int
 
