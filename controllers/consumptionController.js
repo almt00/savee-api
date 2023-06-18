@@ -3,7 +3,6 @@ const prisma = require("../lib/prisma.js");
 const userController = require("./userController.js");
 const router = express.Router();
 const authenticate = require("../middlewares/authMiddleware.js");
-//const processRoutinesForUser = require("../scheduler.js");
 
 router.get("(/user/:user_id)", authenticate, async function (req, res) {
   const { user_id } = req.params;
@@ -54,59 +53,84 @@ router.post("/user/:user_id", authenticate, async function (req, res) {
 });
 
 router.post("/user/all", authenticate, async function (req, res) {
-  const today = new Date();
-  const dayOfWeek = today.getDay(); // 0 (Sunday) to 6 (Saturday)
-  const current_period =
-    today.getHours() < 12
-      ? "morning"
-      : today.getHours() < 19
-      ? "afternoon"
-      : "night";
+  try {
+    await prisma.$transaction(async (prisma) => {
+      const today = new Date();
+      const dayOfWeek = today.getDay();
+      const current_period =
+        today.getHours() < 12
+          ? "morning"
+          : today.getHours() < 19
+          ? "afternoon"
+          : "night";
 
-  // iterate over all users in the database
-  const allUsers = await prisma.user.findMany();
+      const allUsers = await prisma.user.findMany();
 
-  for (const user of allUsers) {
-    // for each user, get all routines
-    const routines = await prisma.userRoutine.findMany({
-      where: {
-        user_id: user.user_id,
-      },
-    });
+      for (const user of allUsers) {
+        console.log("Processing user:", user.user_id);
 
-    // for each routine, check if it is scheduled for today
-    for (const routine of routines) {
-      const { weekdays, period_time } = routine;
-
-      if (weekdays.includes(dayOfWeek) && period_time === current_period) {
-        const { user_id, house_id } = user;
-        const { routine_id, duration_routine, creation_routine, task } =
-          routine;
-        const consumption = await prisma.consumptionHistory.create({
-          data: {
-            user: user_id,
-            routine_id: routine_id,
-            house: parseInt(house_id),
-            payment: null, //mudar isto
-            task: null,
-            task_id: null,
-            consumption: duration_routine,
-            consumption_date: new Date(),
-            type: 0, // não sei o que é isto lmao
-            routine: {
-              connect: {
-                routine_id: routine_id,
-              },
-              duration_routine: duration_routine,
-              creation_routine: creation_routine,
-              task: task,
-            },
+        // Fetch the last payment_id for the user
+        const lastPayment = await prisma.userPayment.findFirst({
+          where: {
+            user_id: user.user_id,
+          },
+          orderBy: {
+            payment_id: "desc",
           },
         });
+
+        const routines = await prisma.userRoutine.findMany({
+          where: {
+            user_id: user.user_id,
+          },
+        });
+
+        const matchingRoutines = routines.filter((routine) => {
+          console.log("Routine weekdays:", routine.weekdays);
+          console.log("Routine period time:", routine.period_time);
+          return (
+            routine.weekdays.includes(dayOfWeek) &&
+            routine.period_time.includes(current_period)
+          );
+        });
+
+        console.log("Matching routines for user:", matchingRoutines);
+        console.log("Current day of week:", dayOfWeek);
+        console.log("Current time period:", current_period);
+
+        if (matchingRoutines.length > 0) {
+          for (const userRoutine of matchingRoutines) {
+            console.log(
+              "Creating consumption entry for routine:",
+              userRoutine.routine_id
+            );
+
+            const { routine, duration_routine } = userRoutine;
+
+            await prisma.consumptionHistory.create({
+              data: {
+                user: { connect: { user_id: user.user_id } },
+                routine: { connect: { routine_id: userRoutine.routine_id } },
+                consumption: duration_routine,
+                consumption_date: new Date(),
+                task: { connect: { task_id: userRoutine.task } }, // Connect the task using the `connect` directive
+                house: { connect: { house_id: user.house_id } },
+                type: 0,
+                payment: { connect: { payment_id: lastPayment.payment_id } }, // Connect the last payment using the `connect` directive
+              },
+            });
+          }
+        }
       }
-    }
+    });
+
+    res.json({ message: "Routines parsed successfully." });
+  } catch (error) {
+    console.error("Error executing transaction:", error);
+    res
+      .status(500)
+      .json({ error: "An error occurred while processing routines." });
   }
-  res.json({ message: "success" });
 });
 
 router.get("(/user/:user_id/today)", authenticate, async function (req, res) {
