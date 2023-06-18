@@ -15,14 +15,14 @@ model ConsumptionHistory {
   house_id         Int
   user             User           @relation(fields: [user_id], references: [user_id])
   user_id          String
-  payment          PaymentHistory @relation(fields: [payment_id], references: [payment_id])
-  payment_id       Int
+  payment          PaymentHistory? @relation(fields: [payment_id], references: [payment_id])
+  payment_id       Int?
   routine          UserRoutine?   @relation(fields: [routine_id], references: [routine_id])
   routine_id       Int?
   task             UserTask?      @relation(fields: [task_id], references: [task_id])
   task_id          Int?
   consumption_date DateTime       @db.DateTime(0)
-  consumption      Int
+  consumption      Float          @db.Float
   type             Int
 
   @@index([house_id], map: "house_id_idx")
