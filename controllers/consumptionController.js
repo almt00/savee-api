@@ -40,7 +40,7 @@ router.post("/user/:user_id", authenticate, async function (req, res) {
     req.body;
   const consumption_entry = await prisma.consumptionHistory.create({
     data: {
-      house_id: house_id,
+      house_id: parseInt(house_id),
       user_id: user_id,
       payment_id: payment_id,
       routine_id: routine_id,
