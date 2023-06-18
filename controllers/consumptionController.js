@@ -80,11 +80,10 @@ router.post("/user/all", authenticate, async function (req, res) {
             await prisma.consumptionHistory.create({
               data: {
                 user: { connect: { user_id: user.user_id } },
-                routine: routine ? { connect: { routine_id: userRoutine.routine_id } } : undefined,
-                routine_id: routine && userRoutine.routine_id ? userRoutine.routine_id : undefined,
+                routine: { connect: { routine_id: userRoutine.routine_id } },
                 consumption: duration_routine,
                 consumption_date: new Date(),
-                task_id: routine && userRoutine.task ? userRoutine.task : undefined,
+                task: { connect: { task_id: userRoutine.task } }, // Connect the task using the `connect` directive
                 house: { connect: { house_id: user.house_id } },
                 type: 0,
               },
