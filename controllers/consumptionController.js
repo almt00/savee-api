@@ -34,6 +34,25 @@ router.get("(/user/:user_id)", authenticate, async function (req, res) {
   res.json(user_consumptions);
 });
 
+router.post("/user/:user_id", authenticate, async function (req, res) {
+  const { user_id } = req.params;
+  const { house_id, payment_id, routine_id, task_id, consumption, type } =
+    req.body;
+  const consumption_entry = await prisma.consumptionHistory.create({
+    data: {
+      house_id: house_id,
+      user_id: user_id,
+      payment_id: payment_id,
+      routine_id: routine_id,
+      task_id: task_id,
+      consumption_date: new Date(),
+      consumption: consumption,
+      type: type,
+    },
+  });
+  res.json(consumption_entry);
+});
+
 router.post("/user/all", authenticate, async function (req, res) {
   const today = new Date();
   const dayOfWeek = today.getDay(); // 0 (Sunday) to 6 (Saturday)
