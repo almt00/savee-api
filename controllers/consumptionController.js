@@ -75,7 +75,7 @@ router.post("/user/all", authenticate, async function (req, res) {
               userRoutine.routine_id
             );
 
-            const { routine, duration_routine, task, house_id } = userRoutine;
+            const { routine, duration_routine } = userRoutine;
 
             await prisma.consumptionHistory.create({
               data: {
@@ -86,7 +86,6 @@ router.post("/user/all", authenticate, async function (req, res) {
                 task: routine ? routine.task : undefined,
                 house: { connect: { house_id: user.house_id } },
                 type: 0,
-                payment: { connect: { payment_id: 1 } },
               },
             });
           }
