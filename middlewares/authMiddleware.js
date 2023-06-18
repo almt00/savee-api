@@ -1,4 +1,5 @@
 const { expressjwt, ExpressJwtRequest } = require("express-jwt");
+const jwt = require("jsonwebtoken");
 
 const authenticate = expressjwt({
   secret: process.env.TOKEN_SECRET,
@@ -13,6 +14,17 @@ const authenticate = expressjwt({
       return req.headers.authorization.split(" ")[1];
     } else if (req.query && req.query.token) {
       return req.query.token;
+    } else if (req.headers["x-cron-token"]) {
+      // Generate a token specifically for the cron job
+      const secretKey = process.env.TOKEN_SECRET;
+      const issuer = process.env.TOKEN_ISSUER;
+
+      const token = jwt.sign({}, secretKey, {
+        expiresIn: "24h",
+        issuer: issuer,
+      });
+
+      return token;
     }
     return null;
   },
