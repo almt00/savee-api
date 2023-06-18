@@ -49,6 +49,17 @@ router.post("/user/all", authenticate, async function (req, res) {
 
       for (const user of allUsers) {
         console.log("Processing user:", user.user_id);
+
+        // Fetch the last payment_id for the user
+        const lastPayment = await prisma.userPayment.findFirst({
+          where: {
+            user_id: user.user_id,
+          },
+          orderBy: {
+            payment_id: "desc",
+          },
+        });
+
         const routines = await prisma.userRoutine.findMany({
           where: {
             user_id: user.user_id,
@@ -86,6 +97,7 @@ router.post("/user/all", authenticate, async function (req, res) {
                 task: { connect: { task_id: userRoutine.task } }, // Connect the task using the `connect` directive
                 house: { connect: { house_id: user.house_id } },
                 type: 0,
+                payment: { connect: { payment_id: lastPayment.payment_id } }, // Connect the last payment using the `connect` directive
               },
             });
           }
