@@ -60,29 +60,33 @@ router.post("/user/all", authenticate, async function (req, res) {
           console.log("Routine period time:", routine.period_time);
           return (
             routine.weekdays.includes(dayOfWeek) &&
-            routine.period_time === current_period
+            routine.period_time.includes(current_period)
           );
         });
 
+        console.log("Matching routines for user:", matchingRoutines);
+        console.log("Current day of week:", dayOfWeek);
+        console.log("Current time period:", current_period);
+
         if (matchingRoutines.length > 0) {
-          for (const routine of matchingRoutines) {
+          for (const userRoutine of matchingRoutines) {
             console.log(
               "Creating consumption entry for routine:",
-              routine.routine_id
+              userRoutine.routine_id
             );
 
-            const { routine_id, duration_routine, task, house_id } = routine;
+            const { routine, duration_routine, task, house_id } = userRoutine;
 
             await prisma.consumptionHistory.create({
               data: {
                 user: { connect: { user_id: user.user_id } },
-                routine: routine
-                  ? { connect: { routine_id: routine.routine_id } }
-                  : undefined,
+                routine: routine ? { connect: { routine_id } } : undefined,
                 consumption: duration_routine,
                 consumption_date: new Date(),
-                task: { connect: { task: task } },
-                house: { connect: { house_id: house_id } },
+                task: routine ? routine.task : undefined,
+                house: { connect: { house_id: user.house_id } },
+                type: 0,
+                payment: { connect: { payment_id: 1 } },
               },
             });
           }
