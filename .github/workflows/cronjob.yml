@@ -20,6 +20,11 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Start server
+        run: |
+          node index.js > /dev/null 2>&1 &
+          sleep 5 # Give some time for the server to start
+
       - name: Run cron job
         env:
           TOKEN_SECRET: ${{ secrets.TOKEN_SECRET }}
