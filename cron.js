@@ -20,7 +20,7 @@ const performPostRequest = async () => {
     },
   };
 
-  const req = http.request(endpoint, options, (res) => {
+  const req = https.request(endpoint, options, (res) => {
     let response = "";
 
     res.on("data", (chunk) => {
