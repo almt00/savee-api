@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const http = require("http");
+const https = require("https");
 
 const performPostRequest = async () => {
   const secretKey = process.env.TOKEN_SECRET;
