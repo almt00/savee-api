@@ -39,4 +39,4 @@ const performPostRequest = async () => {
   req.end();
 };
 
-module.exports = performPostRequest;
+performPostRequest();
