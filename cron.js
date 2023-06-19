@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const axios = require("axios");
+require("dotenv").config();
 
 const performPostRequest = async () => {
   const secret = process.env.TOKEN_SECRET;
@@ -20,7 +21,7 @@ const performPostRequest = async () => {
   };
 
   try {
-    const response = await axios.post(endpoint, null, options);
+    const response = await axios.post(endpoint, {}, options);
     console.log(response.data);
   } catch (error) {
     console.error("Error executing cron job:", error.message);
