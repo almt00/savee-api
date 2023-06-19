@@ -3,8 +3,8 @@ const router = express.Router();
 const nodemailer = require("nodemailer");
 
 router.post("/", async (req, res) => {
-  const { to } = req.body;
-  const inviteLink = "www.savee.pt/register?token=12345678";
+  const { to, userToken } = req.body;
+  const inviteLink = `www.savee.pt/register?t=${userToken}`;
   const config = {
     service: "gmail",
     host: "smtp.gmail.com",
