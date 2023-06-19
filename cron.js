@@ -2,10 +2,10 @@ const jwt = require("jsonwebtoken");
 const axios = require("axios");
 
 const performPostRequest = async () => {
-  const secretKey = process.env.TOKEN_SECRET;
+  const secret = process.env.TOKEN_SECRET;
   const issuer = process.env.TOKEN_ISSUER;
 
-  const token = jwt.sign({}, secretKey, {
+  const token = jwt.sign({}, secret, {
     expiresIn: "24h",
     issuer: issuer,
   });
