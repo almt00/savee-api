@@ -21,5 +21,11 @@
       "source": "/savee-api.vercel.app/(.*)",
       "headers": [{ "key": "Access-Control-Allow-Origin", "value": "*" }]
     }
+  ],
+  "crons": [
+    {
+      "schedule": "0 6,12,18 * * *",
+      "path": "/cron.js"
+    }
   ]
 }
