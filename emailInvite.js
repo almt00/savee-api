@@ -33,7 +33,7 @@ router.post("/", async (req, res) => {
     subject: "Convite para a SAVEE",
     text: `Olá,
 
-    Foste convidado(a) a juntar-te ao Savee, a nova aplicação inovadora que te ajuda a poupar dinheiro de forma fácil. Clica no link abaixo para começar:
+    Foste convidado(a) a juntar-te ao Savee, a nova aplicação inovadora que te ajuda a poupar eletricidade de forma fácil. Clica no link abaixo para começar:
     
     ${inviteLink}
     
@@ -44,7 +44,7 @@ router.post("/", async (req, res) => {
     `,
 
     html: `<p>Olá,</p>
-    <p>Foste convidado(a) a juntar-te ao Savee, a nova aplicação inovadora que te ajuda a poupar dinheiro de forma fácil. Clica no link abaixo para começar:</p>
+    <p>Foste convidado(a) a juntar-te ao Savee, a nova aplicação inovadora que te ajuda a poupar eletricidade de forma fácil. Clica no link abaixo para começar:</p>
     <p><a href="${inviteLink}">${inviteLink}</a></p>
     <p>Estamos ansiosos para te ter connosco!</p>
     <p>Com os melhores cumprimentos,<br>A Equipa Savee</p>
