@@ -1,9 +1,7 @@
 const jwt = require("jsonwebtoken");
-const cron = require("node-cron");
 const http = require("http");
-const authenticate = require("../middlewares/authMiddleware.js");
 
-const makePostRequest = async () => {
+const performPostRequest = async () => {
   const secretKey = process.env.TOKEN_SECRET;
   const issuer = process.env.TOKEN_ISSUER;
 
@@ -41,4 +39,4 @@ const makePostRequest = async () => {
   req.end();
 };
 
-cron.schedule("0 6,12,18 * * *", makePostRequest);
+module.exports = performPostRequest;
