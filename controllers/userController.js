@@ -47,6 +47,7 @@ router.get("/invite/:invite_token", async function (req, res) {
 // add user to DB
 router.post("/", async (req, res) => {
   const {
+    invite,
     first_name,
     last_name,
     username,
@@ -70,7 +71,7 @@ router.post("/", async (req, res) => {
         },
       },
     });
-    if (house_exists) {
+    if (house_exists && invite === null) {
       throw Error("House with that name already exists");
     } else {
       const house = await prisma.house.create({
