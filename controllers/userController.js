@@ -33,12 +33,15 @@ router.get("/:user_id", authenticate, async function (req, res) {
 // emails to be verified after invite
 router.get("/invite/:invite_token", async function (req, res) {
   const { invite_token } = req.params;
-  const user = await prisma.verificationRequest.findFirst({
+  const userInvite = await prisma.verificationRequest.findFirst({
     where: {
       token: invite_token,
     },
+    select: {
+      house_id: true,
+    },
   });
-  res.json(user.house_id);
+  res.json(userInvite);
 });
 
 // add user to DB
