@@ -17,12 +17,12 @@ model ConsumptionHistory {
   user_id          String
   payment          PaymentHistory? @relation(fields: [payment_id], references: [payment_id])
   payment_id       Int?
-  routine          UserRoutine?   @relation(fields: [routine_id], references: [routine_id])
+  routine          UserRoutine?    @relation(fields: [routine_id], references: [routine_id])
   routine_id       Int?
   task             UserTask?       @relation(fields: [task_id], references: [task_id])
   task_id          Int?
-  consumption_date DateTime       @db.DateTime(0)
-  consumption      Float          @db.Float
+  consumption_date DateTime        @db.DateTime(0)
+  consumption      Float           @db.Float
   type             Int
 
   @@index([house_id], map: "house_id_idx")
@@ -89,6 +89,8 @@ model Session {
 model VerificationRequest {
   id         String   @id @default(cuid())
   identifier String
+  email      String
+  house_id   Int
   token      String   @unique
   expires    DateTime
   createdAt  DateTime @default(now())
