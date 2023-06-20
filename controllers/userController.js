@@ -54,6 +54,7 @@ router.post("/", async (req, res) => {
     password,
     email,
     email_colleagues,
+    house_id,
     house_name,
     ref_avatar,
     date_payment,
@@ -71,7 +72,7 @@ router.post("/", async (req, res) => {
         },
       },
     });
-    if (house_exists) {
+    if (house_exists && invite === null) {
       throw Error("House with that name already exists");
     } else {
       let house_id;
