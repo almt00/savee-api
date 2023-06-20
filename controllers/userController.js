@@ -67,7 +67,7 @@ router.post("/", async (req, res) => {
     const house_exists = await prisma.house.findFirst({
       where: {
         house_name: {
-          equals: house_name,
+          equals: house_name || undefined,
         },
       },
     });
