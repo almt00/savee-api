@@ -115,7 +115,7 @@ router.post("/matching-routines", authenticate, async function (req, res) {
                 },
                 consumption: duration_routine,
                 consumption_date: new Date(),
-                task_id: task,
+                task_routine: task,
                 house: { connect: { house_id: user.house_id } },
                 type: 0,
                 payment: lastPayment
