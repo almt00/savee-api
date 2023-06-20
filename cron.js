@@ -11,7 +11,7 @@ const performPostRequest = async () => {
     issuer: issuer,
   });
 
-  const endpoint = "https://savee-api.vercel.app/consumption/user/all";
+  const endpoint = "https://savee-api.vercel.app/consumption/matching-routines";
 
   const options = {
     headers: {

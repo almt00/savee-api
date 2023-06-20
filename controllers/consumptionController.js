@@ -52,7 +52,7 @@ router.post("/user/:user_id", authenticate, async function (req, res) {
   res.json(consumption_entry);
 });
 
-router.post("/user/all", authenticate, async function (req, res) {
+router.post("/matching-routines", authenticate, async function (req, res) {
   try {
     await prisma.$transaction(async (prisma) => {
       const today = new Date();
@@ -116,7 +116,9 @@ router.post("/user/all", authenticate, async function (req, res) {
                 task: { connect: { task_id: userRoutine.task } }, // Connect the task using the `connect` directive
                 house: { connect: { house_id: user.house_id } },
                 type: 0,
-                payment: { connect: { payment_id: lastPayment.payment_id } }, // Connect the last payment using the `connect` directive
+                payment: lastPayment
+                  ? { connect: { payment_id: lastPayment.payment_id } }
+                  : undefined,
               },
             });
           }
