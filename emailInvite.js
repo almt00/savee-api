@@ -28,7 +28,7 @@ router.post("/", async (req, res) => {
   };
 
   const data = {
-    from: "savee.ua.pt@gmail.com",
+    from: '"SAVEE" "savee.ua.pt@gmail.com"',
     bcc: to,
     subject: "Convite para a SAVEE",
     text: `Olá,
