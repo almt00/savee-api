@@ -5,6 +5,7 @@ const bcrypt = require("bcryptjs");
 const { SALT_ROUNDS = 10 } = process.env;
 const generateAuthToken = require("../utils/generateAuthToken.js");
 const authenticate = require("../middlewares/authMiddleware.js");
+const axios = require("axios");
 
 // hash password
 async function hashPassword(rawPassword) {
@@ -37,7 +38,9 @@ router.post("/", async (req, res) => {
     username,
     password,
     email,
+    email_colleagues,
     house_id,
+    house_name,
     ref_avatar,
   } = req.body;
 
@@ -55,11 +58,40 @@ router.post("/", async (req, res) => {
       username: username,
       password_hash: hashedPassword,
       email: email,
+      email_colleagues: email_colleagues,
+      house_name: house_name,
       createdAt: new Date(),
       house_id: house_id,
       ref_avatar: ref_avatar,
     },
   });
+
+  // Generate verification requests for colleagues' emails
+  if (email_colleagues && email_colleagues.length > 0) {
+    const verificationRequests = email_colleagues.map(async (email) => {
+      const verificationRequest = await prisma.verificationRequest.create({
+        data: {
+          identifier: email,
+          email: email,
+          house_id: house_id,
+          token: generateAuthToken({ email: email }),
+          expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // Set expiration time to 1 week from now
+        },
+      });
+
+      // Make a POST request to the email service to send the verification email
+      const inviteData = {
+        to: email,
+        userToken: verificationRequest.token,
+        inviterName: user.first_name,
+      };
+
+      await axios.post("https://savee-api.vercel.app/invite/", inviteData);
+    });
+
+    await Promise.all(verificationRequests);
+  }
+
   // generate user token
   res.json({
     success: true,
