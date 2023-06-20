@@ -21,6 +21,7 @@ model ConsumptionHistory {
   routine_id       Int?
   task             UserTask?       @relation(fields: [task_id], references: [task_id])
   task_id          Int?
+  task_routine     Int?
   consumption_date DateTime        @db.DateTime(0)
   consumption      Float           @db.Float
   type             Int

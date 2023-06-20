@@ -52,7 +52,7 @@ router.post("/user/:user_id", authenticate, async function (req, res) {
   res.json(consumption_entry);
 });
 
-router.post("/user/all", authenticate, async function (req, res) {
+router.post("/matching-routines", authenticate, async function (req, res) {
   try {
     await prisma.$transaction(async (prisma) => {
       const today = new Date();
@@ -99,24 +99,28 @@ router.post("/user/all", authenticate, async function (req, res) {
         console.log("Current time period:", current_period);
 
         if (matchingRoutines.length > 0) {
-          for (const userRoutine of matchingRoutines) {
+          for (const userRoutinesobj of matchingRoutines) {
             console.log(
               "Creating consumption entry for routine:",
-              userRoutine.routine_id
+              userRoutinesobj.routine_id
             );
 
-            const { routine, duration_routine } = userRoutine;
+            const { task, duration_routine } = userRoutinesobj;
 
             await prisma.consumptionHistory.create({
               data: {
                 user: { connect: { user_id: user.user_id } },
-                routine: { connect: { routine_id: userRoutine.routine_id } },
+                routine: {
+                  connect: { routine_id: userRoutinesobj.routine_id },
+                },
                 consumption: duration_routine,
                 consumption_date: new Date(),
-                task: { connect: { task_id: userRoutine.task } }, // Connect the task using the `connect` directive
+                task_routine: task,
                 house: { connect: { house_id: user.house_id } },
                 type: 0,
-                payment: { connect: { payment_id: lastPayment.payment_id } }, // Connect the last payment using the `connect` directive
+                payment: lastPayment
+                  ? { connect: { payment_id: lastPayment.payment_id } }
+                  : undefined,
               },
             });
           }
