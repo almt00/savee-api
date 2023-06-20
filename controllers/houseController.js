@@ -14,13 +14,14 @@ router.get("/:house_id", authenticate, async function (req, res) {
   res.json(house);
 });
 
-router.post("/", authenticate, async (req, res) => {
+router.post("/", async (req, res) => {
   const { house_name } = req.body;
-  await prisma.house.create({
+  const house = await prisma.house.create({
     data: {
       house_name: house_name,
     },
   });
+  res.json(house);
 });
 
 router.put("/:house_id", authenticate, (req, res) => {
