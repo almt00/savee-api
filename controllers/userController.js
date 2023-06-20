@@ -71,15 +71,21 @@ router.post("/", async (req, res) => {
         },
       },
     });
-    if (house_exists && invite === null) {
+    if (house_exists) {
       throw Error("House with that name already exists");
     } else {
-      const house = await prisma.house.create({
-        data: {
-          house_name: house_name,
-        },
-      });
-      const house_id = house.house_id;
+      let house_id;
+      if (invite === null) {
+        const house = await prisma.house.create({
+          data: {
+            house_name: house_name,
+          },
+        });
+        house_id = house.house_id;
+      } else {
+        house_id = invite.house_id;
+      }
+
       const payment = await prisma.paymentHistory.create({
         data: {
           house_id: parseInt(house_id),
