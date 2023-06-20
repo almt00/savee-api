@@ -53,64 +53,92 @@ router.post("/", async (req, res) => {
     password,
     email,
     email_colleagues,
-    house_id,
     house_name,
     ref_avatar,
+    date_payment,
   } = req.body;
 
   // check if user already exists
-  const exists = await prisma.user.findUnique({ where: { email } });
-  if (exists) throw Error("User with that email already exists");
-
-  // ensure that the password is hashed before being stored
-  const hashedPassword = await hashPassword(password);
-
-  const user = await prisma.user.create({
-    data: {
-      first_name: first_name,
-      last_name: last_name,
-      username: username,
-      password_hash: hashedPassword,
-      email: email,
-      house_name: house_name,
-      createdAt: new Date(),
-      house_id: house_id,
-      ref_avatar: ref_avatar,
-    },
-  });
-
-  // Generate verification requests for colleagues' emails
-  if (email_colleagues && email_colleagues.length > 0) {
-    const verificationRequests = email_colleagues.map(async (email) => {
-      const verificationRequest = await prisma.verificationRequest.create({
+  const user_exists = await prisma.user.findFirst({ where: { email } });
+  if (user_exists) {
+    throw Error("User with that email already exists");
+  } else {
+    const house_exists = await prisma.house.findFirst({
+      where: {
+        house_name: {
+          equals: house_name,
+        },
+      },
+    });
+    if (house_exists) {
+      throw Error("House with that name already exists");
+    } else {
+      const house = await prisma.house.create({
         data: {
-          identifier: email,
+          house_name: house_name,
+        },
+      });
+      const house_id = house.house_id;
+      const payment = await prisma.paymentHistory.create({
+        data: {
+          house_id: parseInt(house_id),
+          date_payment: new Date(date_payment),
+          value_payment: null,
+        },
+      });
+      // ensure that the password is hashed before being stored
+      const hashedPassword = await hashPassword(password);
+
+      if (hashedPassword) {
+      }
+      const user = await prisma.user.create({
+        data: {
+          first_name: first_name,
+          last_name: last_name,
+          username: username,
+          password_hash: hashedPassword,
           email: email,
+          createdAt: new Date(),
           house_id: house_id,
-          token: generateAuthToken({ email: email }),
-          expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // Set expiration time to 1 week from now
+          ref_avatar: ref_avatar,
         },
       });
 
-      // Make a POST request to the email service to send the verification email
-      const inviteData = {
-        to: email,
-        userToken: verificationRequest.token,
-        inviterName: user.first_name,
-      };
+      // Generate verification requests for colleagues' emails
+      if (email_colleagues && email_colleagues.length > 0) {
+        const verificationRequests = email_colleagues.map(async (email) => {
+          const verificationRequest = await prisma.verificationRequest.create({
+            data: {
+              identifier: email,
+              email: email,
+              house_id: house_id,
+              token: generateAuthToken({ email: email }),
+              expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // Set expiration time to 1 week from now
+            },
+          });
 
-      await axios.post("https://savee-api.vercel.app/invite/", inviteData);
-    });
+          // Make a POST request to the email service to send the verification email
+          const inviteData = {
+            to: email,
+            userToken: verificationRequest.token,
+            inviterName: user.first_name,
+          };
 
-    await Promise.all(verificationRequests);
+          await axios.post("https://savee-api.vercel.app/invite/", inviteData);
+        });
+
+        await Promise.all(verificationRequests);
+      }
+
+      // generate user token
+      res.json({
+        success: true,
+        user_id: user.user_id,
+        house_id: user.house_id,
+        token: generateAuthToken(user),
+      });
+    }
   }
-
-  // generate user token
-  res.json({
-    success: true,
-    user: user,
-    token: generateAuthToken(user),
-  });
 });
 
 // login user
