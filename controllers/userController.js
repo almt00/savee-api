@@ -46,7 +46,7 @@ router.post("/", async (req, res) => {
 
   // check if user already exists
   const exists = await prisma.user.findUnique({ where: { email } });
-  if (exists) throw ConflictError("User with that email already exists");
+  if (exists) throw error("User with that email already exists");
 
   // ensure that the password is hashed before being stored
   const hashedPassword = await hashPassword(password);
