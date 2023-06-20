@@ -58,7 +58,6 @@ router.post("/", async (req, res) => {
       username: username,
       password_hash: hashedPassword,
       email: email,
-      email_colleagues: email_colleagues,
       house_name: house_name,
       createdAt: new Date(),
       house_id: house_id,
