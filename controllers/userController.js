@@ -83,12 +83,10 @@ router.post("/", async (req, res) => {
       const inviteData = {
         to: email,
         userToken: verificationRequest.token,
+        inviterName: user.first_name,
       };
 
-      await axios.post(
-        "https://savee-api.vercel.app/invite/emailInvite",
-        inviteData
-      );
+      await axios.post("https://savee-api.vercel.app/invite/", inviteData);
     });
 
     await Promise.all(verificationRequests);
