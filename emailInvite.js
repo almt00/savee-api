@@ -9,7 +9,7 @@ router.post("/", async (req, res) => {
     service: "gmail",
     host: "smtp.gmail.com",
     port: 587,
-    secure: false,
+    secure: true,
     auth: {
       user: "savee.ua.pt@gmail.com",
       pass: "fhpztkibwaxtzzwm",
