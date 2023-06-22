@@ -167,11 +167,11 @@ router.post("/login", async (req, res) => {
 
   // check if user exists
   const user = await prisma.user.findFirst({ where: { email } });
-  if (!user) throw UnauthorizedError();
+  if (!user) throw Error("invalid user");
 
   // check if password is valid
   const isPwValid = await bcrypt.compare(password, user.password_hash);
-  if (!isPwValid) throw UnauthorizedError();
+  if (!isPwValid) throw Error("invalid password");
 
   res.json({
     success: true,
