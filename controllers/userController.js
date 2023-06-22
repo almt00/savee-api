@@ -84,6 +84,7 @@ router.post("/", async (req, res) => {
         });
         house_id = house.house_id;
       } else {
+        console.log(invite);
         house_id = invite.house_id;
       }
 
@@ -94,6 +95,9 @@ router.post("/", async (req, res) => {
           value_payment: null,
         },
       });
+
+      const payment_id = payment.payment_id;
+
       // ensure that the password is hashed before being stored
       const hashedPassword = await hashPassword(password);
 
@@ -137,6 +141,14 @@ router.post("/", async (req, res) => {
 
         await Promise.all(verificationRequests);
       }
+
+      const user_payment = await prisma.UserPayment.create({
+        data: {
+          payment_id: payment_id,
+          payment_percentage: 0,
+          user_id: user.user_id,
+        },
+      });
 
       // generate user token
       res.json({
