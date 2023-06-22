@@ -11,7 +11,7 @@ router.get("(/user/:user_id)", authenticate, async function (req, res) {
       user_id: user_id,
     },
     orderBy: {
-      consumption_date: "desc",
+      consumption_date: "asc",
     },
     include: {
       task: {
