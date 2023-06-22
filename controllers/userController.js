@@ -87,14 +87,25 @@ router.post("/", async (req, res) => {
         console.log(invite);
         house_id = invite.house_id;
       }
-
-      const payment = await prisma.paymentHistory.create({
-        data: {
-          house_id: parseInt(house_id),
-          date_payment: new Date(date_payment),
-          value_payment: null,
-        },
-      });
+      let payment = null;
+      if (invite === null) {
+        payment = await prisma.paymentHistory.create({
+          data: {
+            house_id: parseInt(house_id),
+            date_payment: new Date(date_payment),
+            value_payment: null,
+          },
+        });
+      } else {
+        payment = await prisma.paymentHistory.findFirst({
+          where: {
+            house_id: parseInt(house_id),
+          },
+          orderBy: {
+            date_payment: "desc",
+          },
+        });
+      }
 
       const payment_id = payment.payment_id;
 
